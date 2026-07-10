@@ -1,0 +1,34 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Capacitor
+        run: npm i @capacitor/cli @capacitor/ios
+
+      - name: Sync Web
+        run: npx cap sync ios
+
+      - name: Build iOS
+        uses: maxim(maxim)/xcode-cloud-build@latest
+        with:
+          app-id: com.tt.jizhang
+          build-description: "TT记账 iOS 构建"
+          export-options: ExportOptions
+          skip-xcode-version-check: true
+          runner: public.jenkins.fastlane
+          app-store-connect-api-key: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
