@@ -1,0 +1,26 @@
+{
+  "name": "TT日常记账",
+  "short_name": "TT记账",
+  "description": "简洁美观的日常记账工具",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#6366f1",
+  "theme_color": "#6366f1",
+  "lang": "zh-CN",
+  "categories": ["finance", "utilities"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "appId": "com.tt.jizhang",
+  "appName": "TT记账",
+  "webDir": "www",
+  "server": {
+    "url": "http://47.108.68.212/"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#6366f1"
+  }
+}

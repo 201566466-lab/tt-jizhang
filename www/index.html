@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TT记账">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>TT日常记账</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/pc.css">
+<link rel="stylesheet" href="css/mobile.css">
+</head>
+<body>
+
+<!-- 动态背景 -->
+<div class="bg-mesh">
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="finance-particles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<div class="app">
+  <!-- 顶部 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🌿</div>
+      <div class="brand-text">TT日常记账</div>
+    </div>
+    <!-- PC 顶部导航菜单 -->
+    <nav class="top-nav" style="display:none">
+      <button class="sb-tab active" data-page="home"><span class="tab-icon">🏠</span><span>首页 <span class="nav-kbd">A</span></span></button>
+      <button class="sb-tab" data-page="bills"><span class="tab-icon">📝</span><span>账单 <span class="nav-kbd">S</span></span></button>
+      <button class="sb-tab" data-page="investment"><span class="tab-icon">📈</span><span>投资 <span class="nav-kbd">D</span></span></button>
+      <button class="sb-tab" data-page="stats"><span class="tab-icon">📊</span><span>统计 <span class="nav-kbd">F</span></span></button>
+      <button class="sb-tab" data-page="accounts"><span class="tab-icon">💳</span><span>账户 <span class="nav-kbd">G</span></span></button>
+      <button class="sb-tab" data-page="settings"><span class="tab-icon">⚙️</span><span>设置 <span class="nav-kbd">H</span></span></button>
+    </nav>
+    <div class="top-actions">
+      <div class="book-chip" id="bookChip">📒 日常账本</div>
+      <div class="sync-status" id="syncStatus" title="服务器保存状态"><span class="sync-dot"></span><span id="syncStatusText">待同步</span></div>
+      <button class="icon-btn-sm top-tool-btn mobile-only" id="btnSearch" title="搜索"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span><span class="tool-label">搜索</span></button>
+      <button class="icon-btn-sm top-tool-btn mobile-only" id="btnCalendar" title="日历"><span class="tool-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="tool-label">日历</span></button>
+      <button class="icon-btn-sm top-tool-btn" id="btnTheme" title="切换主题"><span class="tool-icon">🌙</span><span class="tool-label">主题</span></button>
+      <button class="icon-btn-sm top-tool-btn" id="btnRefresh" title="恢复当前页面默认状态"><span class="tool-icon">🔄</span><span class="tool-label">恢复当前页</span></button>
+      <button class="icon-btn-sm top-tool-btn" id="btnExport" title="导出数据"><span class="tool-icon">📤</span><span class="tool-label">导出</span></button>
+      <button class="icon-btn-sm top-tool-btn" id="btnLogout" title="退出登录"><span class="tool-icon">🚪</span><span class="tool-label">退出</span></button>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main">
+
+  <!-- 页面容器 -->
+  <div id="pages" class="pages-wrap">
+
+    <!-- 首页 -->
+    <div class="page" id="pageHome">
+      <!-- 骨架屏 -->
+      <div class="skeleton-wrap" id="homeSkeleton">
+        <div class="skeleton-col">
+          <div class="skeleton-block" style="height:140px;border-radius:var(--radius)"></div>
+          <div class="skeleton-block" style="height:100px;border-radius:var(--radius);margin-top:16px"></div>
+          <div class="skeleton-block" style="height:180px;border-radius:var(--radius);margin-top:16px"></div>
+        </div>
+        <div class="skeleton-col" style="flex:1.25">
+          <div class="skeleton-block" style="height:200px;border-radius:var(--radius)"></div>
+          <div class="skeleton-block" style="height:48px;border-radius:var(--radius-sm);margin-top:16px"></div>
+          <div class="skeleton-block" style="height:240px;border-radius:var(--radius);margin-top:16px"></div>
+        </div>
+        <div class="skeleton-col">
+          <div class="skeleton-block" style="height:200px;border-radius:var(--radius)"></div>
+          <div class="skeleton-block" style="height:200px;border-radius:var(--radius);margin-top:16px"></div>
+        </div>
+      </div>
+      <!-- 左侧边栏 -->
+      <div class="col-side">
+        <!-- 资产净值卡片 -->
+        <div class="networth-card">
+          <div class="greeting">
+            <h2>晚上好，<span class="name">旅行者</span> 👋</h2>
+            <p>记账是通往自由的地图</p>
+            <div class="home-clock" id="homeClock">--</div>
+          </div>
+          <div class="networth-label">💎 净资产</div>
+          <div class="networth-amount" id="netWorthAmt">¥0.00</div>
+          <div class="networth-trend" id="netWorthTrend">账户余额合计</div>
+          <div class="networth-breakdown">
+            <div class="networth-mini">
+              <div class="networth-mini-label">总资产</div>
+              <div class="networth-mini-val asset" id="totalAssetsAmt">¥0.00</div>
+            </div>
+            <div class="networth-mini">
+              <div class="networth-mini-label">负债</div>
+              <div class="networth-mini-val debt" id="totalDebtAmt">¥0.00</div>
+            </div>
+            <div class="networth-mini">
+              <div class="networth-mini-label">记账总天数</div>
+              <div class="networth-mini-val" id="totalBookDays">0 天</div>
+            </div>
+            <div class="networth-mini">
+              <div class="networth-mini-label">记账总笔数</div>
+              <div class="networth-mini-val" id="totalBookCount">0 笔</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 消费人格 -->
+        <div class="persona-card" id="personaCard">
+          <div class="persona-tag">🏷️ 消费人格</div>
+          <div class="persona-title" id="personaTitle">理性理财家</div>
+          <div class="persona-desc" id="personaDesc">你的收支比例很健康，本月结余率达到 42%，继续保持！</div>
+        </div>
+
+        <!-- 账户速览 -->
+        <div class="side-card">
+          <div class="side-card-title">💳 账户速览</div>
+          <div id="accountSnapshot"></div>
+        </div>
+      </div>
+
+      <!-- 中间主内容 -->
+      <div class="col-main">
+      <!-- 年月+账本选择行 -->
+      <div class="month-filter-bar" id="homeMonthFilterBar">
+        <select id="homeMonthSelect" class="month-select"></select>
+        <button class="book-select-btn" id="homeBookSelectBtn">📒 默认账本</button>
+      </div>
+      <!-- 钱包卡片 -->
+      <div class="wallet-card">
+        <!-- 手机端顶部汇总行：年月 + 收入 + 支出 -->
+        <div class="wallet-summary-bar" id="walletSummaryBar">
+          <div class="ws-month" id="wsMonthBlock">
+            <div class="ws-year" id="wsYearBtn">2026年</div>
+            <div class="ws-month-val" id="wsMonthBtn">07月</div>
+          </div>
+          <div class="ws-income">
+            <div class="ws-label">收入</div>
+            <div class="ws-val" id="wIncome2">0.00</div>
+          </div>
+          <div class="ws-expense">
+            <div class="ws-label">支出</div>
+            <div class="ws-val" id="wExpense2">0.00</div>
+          </div>
+        </div>
+        <div class="wallet-label">本月结余</div>
+        <div class="wallet-amount" id="wBalance">¥0.00</div>
+        <div class="wallet-quote" id="quoteText">真正的富有，是知道自己拥有什么。<span class="quote-author" id="quoteAuthor">薄荷记账</span></div>
+        <div class="wallet-row">
+          <div class="wallet-item">
+            <div class="wallet-item-label">收入</div>
+            <div class="wallet-item-val" id="wIncome">¥0.00</div>
+          </div>
+          <div class="wallet-item">
+            <div class="wallet-item-label">支出</div>
+            <div class="wallet-item-val" id="wExpense">¥0.00</div>
+          </div>
+          <div class="wallet-item wallet-budget-item" id="walletBudgetItem" title="点击修改月预算">
+            <div class="wallet-item-label">本月预算</div>
+            <div class="wallet-item-val" id="wBudget">¥0.00</div>
+            <div class="wallet-budget-sub" id="wBudgetSub">已用 ¥0.00 / ¥0.00</div>
+            <div class="budget-bar-wrap"><div class="budget-bar" id="budgetBar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="wallet-insight-grid" id="monthInsight"></div>
+      </div>
+
+      <!-- 预算进度卡片 -->
+      <div class="budget-progress-card" id="homeBudgetCard">
+        <div class="budget-progress-title">本月预算</div>
+        <div class="budget-progress-bar-wrap"><div class="budget-progress-bar" id="homeBudgetBar" style="width:0%"></div></div>
+        <div class="budget-progress-info" id="homeBudgetInfo">已花费 ¥0.00 / ¥0.00 · 剩余 ¥0.00</div>
+      </div>
+
+      <!-- 手机端快捷功能图标行 -->
+      <div class="home-quick-actions" id="homeQuickActions">
+        <div class="hqa-item" onclick="goToYearBill()"><div class="hqa-icon">📋</div><div class="hqa-label">账单</div></div>
+        <div class="hqa-item" onclick="switchPage('investment')"><div class="hqa-icon">📈</div><div class="hqa-label">投资</div></div>
+        <div class="hqa-item" onclick="switchPage('accounts')"><div class="hqa-icon">🏦</div><div class="hqa-label">资产</div></div>
+        <div class="hqa-item" onclick="switchPage('stats')"><div class="hqa-icon">📊</div><div class="hqa-label">统计</div></div>
+        <div class="hqa-item" onclick="switchPage('settings')"><div class="hqa-icon">⚙️</div><div class="hqa-label">设置</div></div>
+      </div>
+
+      <!-- 快速记账 -->
+      <div class="quick-entry-bar" id="quickEntryBar">
+        <input type="text" enterkeyhint="go" class="quick-entry-input" id="quickEntryAmount" placeholder="输入金额，回车快速记账">
+        <button class="qe-go-btn" id="quickEntryGo">记</button>
+        <div class="quick-entry-type" id="quickEntryType">
+          <button class="qe-type-btn active" data-qe-type="expense">支出</button>
+          <button class="qe-type-btn" data-qe-type="income">收入</button>
+        </div>
+        <div class="quick-entry-hint" id="quickEntryHint"></div>
+      </div>
+      <!-- 快速记账分类选择浮层 -->
+      <div class="quick-cat-overlay" id="quickCatOverlay">
+        <div class="quick-cat-panel" id="quickCatPanel">
+          <div class="quick-cat-head">
+            <div class="quick-cat-title" id="quickCatTitle">选择分类</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="quick-cat-manage" id="quickCatManage" title="管理快捷备注">⚙️</button>
+              <button class="quick-cat-cancel" id="quickCatCancel">取消</button>
+            </div>
+          </div>
+          <div class="quick-cat-grid" id="quickCatGrid"></div>
+          <div class="quick-cat-note-row" id="quickCatNoteRow" style="display:none">
+            <div class="quick-cat-note-label" id="quickCatNoteLabel">快捷备注</div>
+            <div class="quick-cat-notes" id="quickCatNotes"></div>
+          </div>
+          <div class="quick-cat-desc-row" id="quickCatDescRow">
+            <input type="text" class="quick-cat-desc" id="quickCatDesc" placeholder="备注（可选）" maxlength="60">
+            <button class="qe-go-btn" id="quickCatSave" style="margin-left:8px">保存</button>
+          </div>
+        </div>
+      </div>
+      <!-- 快捷备注管理弹窗 -->
+      <div class="quick-cat-overlay" id="quickNotesManageOverlay">
+        <div class="quick-cat-panel" id="quickNotesManagePanel" style="max-height:80vh">
+          <div class="quick-cat-head">
+            <div class="quick-cat-title" id="quickNotesManageTitle">管理快捷备注</div>
+            <button class="quick-cat-cancel" id="quickNotesManageClose">返回</button>
+          </div>
+          <div class="quick-cat-desc-row">
+            <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:6px" id="quickNotesManageHint">选择分类，添加或删除该分类的快捷备注</div>
+          </div>
+          <div class="quick-cat-grid" id="quickNotesManageGrid"></div>
+          <div id="quickNotesEditRow" style="display:none;padding:8px 20px 16px">
+            <div class="quick-cat-note-label" id="quickNotesEditLabel">当前分类快捷备注</div>
+            <div class="quick-cat-notes" id="quickNotesEditList"></div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <input type="text" class="quick-cat-desc" id="quickNotesEditInput" placeholder="输入新备注，回车添加" maxlength="20" style="flex:1">
+              <button class="qe-go-btn" id="quickNotesEditAdd">添加</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 浮动金额动画 -->
+      <div class="float-amount-anim" id="floatAmountAnim"></div>
+
+      <!-- 快捷操作 -->
+      <div class="quick-row">
+        <div class="q-btn q-expense" data-type="expense" onclick="openTx('expense')">
+          <div class="q-icon">➖</div>
+          <div class="q-label">支出</div>
+          <div class="q-key">N</div>
+        </div>
+        <div class="q-btn q-income" data-type="income" onclick="openTx('income')">
+          <div class="q-icon">➕</div>
+          <div class="q-label">收入</div>
+          <div class="q-key">I</div>
+        </div>
+        <div class="q-btn q-transfer" data-type="transfer" onclick="openTx('transfer')">
+          <div class="q-icon">🔄</div>
+          <div class="q-label">转账</div>
+          <div class="q-key">T</div>
+        </div>
+        <div class="q-btn q-invest" data-type="invest" onclick="openTx('invest')">
+          <div class="q-icon">📈</div>
+          <div class="q-label">投资</div>
+          <div class="q-key">V</div>
+        </div>
+      </div>
+
+      <!-- 日账单 -->
+      <div class="list-card">
+        <div class="home-section-head">
+          <div class="section-title">📅 日账单</div>
+          <select id="homeBillMonth" class="home-month-select" title="切换首页日账单月份"></select>
+        </div>
+        <div class="filter-row" style="position:static;margin:0 12px 10px;padding:0;background:transparent">
+          <input type="search" id="homeBillKeyword" placeholder="搜索首页日账单备注/分类/金额">
+        </div>
+        <div id="recentList" class="home-day-bills"></div>
+      </div>
+      </div><!-- /col-main -->
+
+      <!-- 右侧边栏 -->
+      <div class="col-right">
+      <!-- 1. 消费日历 -->
+      <div class="calendar-card">
+        <div class="calendar-head">
+          <div class="calendar-title">📅 消费日历</div>
+          <div class="calendar-nav">
+            <button class="cal-nav-btn" id="calPrev" title="上个月">‹</button>
+            <div class="calendar-month" id="calMonth">7月</div>
+            <button class="cal-nav-btn" id="calNext" title="下个月">›</button>
+          </div>
+        </div>
+        <div class="calendar-mode-switch" id="calendarModeSwitch">
+          <button data-calendar-mode="day" class="active">消费日历</button>
+          <button data-calendar-mode="month">消费月历</button>
+          <button data-calendar-mode="year">消费年历</button>
+        </div>
+        <div class="calendar-grid" id="calGrid"></div>
+      </div>
+
+        <!-- 支出排行 -->
+        <div class="side-card top-expense-card">
+          <div class="side-card-title">
+            <span id="topExpenseTitle">🔥 本月支出排行</span>
+            <div class="rank-switch" id="topExpenseSwitch">
+              <button data-rank-range="week">本周</button>
+              <button data-rank-range="month" class="active">本月</button>
+              <button data-rank-range="year">本年</button>
+            </div>
+            <div class="rank-sort-switch" id="topExpenseSortSwitch">
+              <button data-rank-sort="amount" class="active">金额</button>
+              <button data-rank-sort="count">笔数</button>
+            </div>
+          </div>
+          <div class="rank-hint" id="topExpenseHint" style="margin-bottom:10px">双击类别查看账单</div>
+          <div id="topExpenseList"></div>
+        </div>
+
+      </div><!-- /col-right -->
+    </div><!-- /pageHome -->
+
+    <!-- 排行页面 -->
+    <div class="page hide" id="pageRanking">
+      <div class="ranking-header">
+        <button class="sub-back-btn" onclick="switchPage('home')">返回</button>
+        <div class="ranking-title" id="rankingTitle">收入排行</div>
+        <div class="ranking-sort">
+          <button class="ranking-sort-btn active" data-sort="amount" id="rankSortAmount" onclick="setRankSort('amount')">按金额</button>
+          <button class="ranking-sort-btn" data-sort="date" id="rankSortDate" onclick="setRankSort('date')">按时间</button>
+        </div>
+      </div>
+      <div class="ranking-month" id="rankingMonth"></div>
+      <div class="ranking-list" id="rankingList"></div>
+    </div>
+
+    <!-- 账单页 -->
+    <div class="page hide" id="pageBills">
+      <div class="sub-back-btn" onclick="switchPage('home')">返回</div>
+      <!-- 账单标签切换 -->
+      <div class="bills-tabs">
+        <button class="bills-tab active" data-billtab="day">📅 日账单</button>
+        <button class="bills-tab" data-billtab="month">📊 月账单</button>
+        <button class="bills-tab" data-billtab="year">📆 年账单</button>
+      </div>
+
+      <!-- 日账单 -->
+      <div class="bills-panel" id="billsPanelDay">
+        <div class="filter-row">
+          <select id="fType">
+            <option value="">全部</option><option value="expense">支出</option><option value="income">收入</option><option value="transfer">转账</option><option value="invest">投资</option>
+          </select>
+          <select id="fMonth"></select>
+          <select id="fCat">
+            <option value="">全部分类</option>
+          </select>
+          <input type="search" id="fKeyword" placeholder="搜索备注/分类/金额，如 >100、餐饮 50-100">
+        </div>
+        <div class="pc-tools-row">
+          <button class="tool-btn active" id="billListModeBtn">列表模式</button>
+          <button class="tool-btn" id="billTableModeBtn">表格模式</button>
+          <button class="tool-btn" id="billCompactBtn">紧凑模式</button>
+          <button class="tool-btn" id="advancedFilterBtn">高级筛选</button>
+          <button class="tool-btn" id="pendingOnlyBtn">待整理</button>
+          <button class="tool-btn" id="largeOnlyBtn">大额支出</button>
+          <button class="tool-btn" id="splitWorkbenchBtn">分屏工作台</button>
+          <button class="tool-btn" id="clearBillFiltersBtn">清空筛选</button>
+          <button class="tool-btn" id="billClearSelectionBtn">清空详情</button>
+        </div>
+        <div class="search-history hide" id="billSearchHistory"></div>
+        <div class="advanced-filter hide" id="advancedFilterPanel">
+          <input type="date" id="advStart" title="开始日期">
+          <input type="date" id="advEnd" title="结束日期">
+          <input type="number" id="advMin" placeholder="最小金额">
+          <input type="number" id="advMax" placeholder="最大金额">
+          <select id="advAcc"><option value="">全部账户</option></select>
+          <select id="advTag"><option value="">全部标签</option></select>
+          <select id="advStatus"><option value="">全部状态</option><option value="pending">待整理</option><option value="normal">正常</option></select>
+          <select id="advSource"><option value="">全部来源</option><option value="shark">导入账单</option><option value="reconcile">对账调整</option><option value="repeat">重复生成</option></select>
+          <select id="advDup"><option value="">重复状态</option><option value="dup">疑似重复</option></select>
+        </div>
+        <div id="billCatFilter" class="bill-filter-chip hide"></div>
+        <div id="billResultSummary" class="bill-result-summary"></div>
+        <div class="bills-workspace">
+          <div>
+            <div class="list-card" id="billsList"></div>
+            <div class="list-card bill-table-card hide" id="billsTableWrap"></div>
+            <div class="split-workbench hide" id="splitWorkbench">
+              <div class="list-card"><div class="section-title" style="padding:12px 12px 0">📊 筛选统计</div><div id="splitStats" class="side-card-body"></div></div>
+              <div class="list-card"><div class="section-title" style="padding:12px 12px 0">💳 账户摘要</div><div id="splitAccounts" class="side-card-body"></div></div>
+            </div>
+          </div>
+          <div class="bill-detail-panel" id="billDetailPanel">
+            <div class="bill-detail-empty">点击左侧任意账单，在这里直接修改金额、分类、账户、备注；修改后会自动保存。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 月账单 -->
+      <div class="bills-panel hide" id="billsPanelMonth">
+        <div class="month-bill-summary" id="monthBillSummary"></div>
+        <div class="month-bill-cats" id="monthBillCats"></div>
+      </div>
+
+      <!-- 年账单 -->
+      <div class="bills-panel hide" id="billsPanelYear">
+        <div class="month-bill-month-nav" style="margin-bottom:16px">
+          <button id="ybPrev">◀</button>
+          <div class="mb-month-text" id="ybYearText"></div>
+          <button id="ybNext">▶</button>
+        </div>
+        <div class="year-bill-summary" id="yearBillSummary"></div>
+        <div class="year-bill-months" id="yearBillMonths"></div>
+      </div>
+
+      <!-- 右侧边栏 -->
+      <div class="bills-sidebar">
+        <!-- 日账单侧边栏 -->
+        <div class="bill-side-panel" id="dayBillSide">
+          <div class="side-card">
+            <div class="side-card-title">📋 快捷统计</div>
+            <div id="billsQuickStats" class="side-card-body"></div>
+          </div>
+          <div class="side-card">
+            <div class="side-card-title">🏷️ 常用分类</div>
+            <div id="billsTopCats" class="side-card-body"></div>
+          </div>
+          <div class="side-card">
+            <div class="side-card-title">⚠️ 异常检测</div>
+            <div id="billsAnomalyPanel" class="side-card-body"></div>
+          </div>
+        </div>
+        <!-- 月账单侧边栏 -->
+        <div class="bill-side-panel hide" id="monthBillSide">
+          <div class="side-card">
+            <div class="side-card-title">💡 本月洞察</div>
+            <div id="monthInsightPanel" class="side-card-body"></div>
+          </div>
+          <div class="side-card">
+            <div class="side-card-title">📊 分类排行</div>
+            <div id="monthTopCatsPanel" class="side-card-body"></div>
+          </div>
+        </div>
+        <!-- 年账单侧边栏 -->
+        <div class="bill-side-panel hide" id="yearBillSide">
+          <div class="side-card">
+            <div class="side-card-title">📈 年度概览</div>
+            <div id="yearOverviewPanel" class="side-card-body"></div>
+          </div>
+          <div class="side-card">
+            <div class="side-card-title">📊 月均趋势</div>
+            <div id="yearTrendPanel" class="side-card-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 账户页 -->
+    <div class="page hide" id="pageAccounts">
+      <div class="sub-back-btn" onclick="switchPage('home')">返回</div>
+      <div class="section-title">💳 我的账户</div>
+      <div class="accounts-main">
+        <div class="accounts-list-pane">
+          <div id="accountsList"></div>
+          <button class="btn-primary" style="margin-top:10px" id="btnAddAccount">➕ 添加新账户</button>
+        </div>
+        <div class="list-card account-ledger-card">
+          <div class="section-title" style="padding:4px 4px 10px">📒 账户流水</div>
+          <div id="accountLedgerPanel"></div>
+        </div>
+      </div>
+      <!-- 右侧边栏 -->
+      <div class="accounts-sidebar">
+        <div class="side-card">
+          <div class="side-card-title">📊 资产分布</div>
+          <div id="accountsDistribution" class="side-card-body"></div>
+        </div>
+        <div class="side-card">
+          <div class="side-card-title">🧾 账户对账</div>
+          <div id="accountReconcilePanel" class="side-card-body"></div>
+        </div>
+        <div class="side-card">
+          <div class="side-card-title">📋 资产负债表</div>
+          <div id="balanceSheetPanel" class="side-card-body"></div>
+        </div>
+      </div>
+    </div>
+
+            <!-- 统计页 -->
+    <div class="page hide" id="pageStats">
+      <div class="sub-back-btn" onclick="switchPage('home')">返回</div>
+      <div class="chart-card asset-change-card">
+        <div class="chart-head">
+          <div class="chart-title">💎 总资产变化台账</div>
+          <div class="asset-ledger-actions">
+            <button class="asset-action-btn" id="btnAssetImport" title="导入总资产快照">📥 导入</button>
+            <button class="asset-action-btn" id="btnAssetExport" title="导出总资产快照">📤 导出</button>
+          </div>
+        </div>
+        <input type="file" id="assetImportFile" accept=".csv,.json" style="display:none">
+        <!-- 粘贴导入弹窗 -->
+        <div class="modal" id="assetPasteModal">
+          <div class="modal-sheet" style="max-width:520px">
+            <div class="sheet-head">
+              <div class="sheet-title">📥 粘贴导入总资产快照</div>
+              <button class="icon-btn-sm" id="assetPasteClose">✕</button>
+            </div>
+            <div class="sheet-body">
+              <div style="margin-bottom:10px;color:var(--text-tertiary);font-size:12px">支持 JSON 数组格式，每条记录包含 timestamp（时间戳）、amount（金额）、remark（备注，可选）</div>
+              <textarea id="assetPasteText" placeholder='粘贴 JSON 数组，例如：&#10;[&#10;  { "timestamp": "2026-06-22 00:00:00", "amount": 430021, "remark": "" },&#10;  { "timestamp": "2026-06-03 00:00:00", "amount": 420221, "remark": "月底盘点" }&#10;]' style="width:100%;height:200px;border:1px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-family:monospace;background:var(--bg);color:var(--text);resize:vertical;box-sizing:border-box"></textarea>
+              <div style="display:flex;gap:10px;margin-top:12px">
+                <button class="btn-primary" id="assetPasteImport" style="flex:1">导入</button>
+                <button class="btn-secondary" id="assetPasteClear" style="flex:1">清空</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="assetChangeSummary"></div>
+        <div class="asset-ledger-layout">
+          <div class="asset-ledger-left">
+            <div class="asset-view-toggle">
+              <button class="asset-action-btn active" id="assetListModeBtn" title="列表模式">📋 列表</button>
+              <button class="asset-action-btn" id="assetTableModeBtn" title="表格模式">📊 表格</button>
+              <select id="assetYearFilter" class="asset-action-btn" style="padding:6px 8px;appearance:auto;border:1px solid var(--border-light);border-radius:10px;background:var(--surface);color:var(--text-secondary);font-size:12px;font-weight:800;cursor:pointer"></select>
+              <select id="assetMonthFilter" class="asset-action-btn" style="padding:6px 8px;appearance:auto;border:1px solid var(--border-light);border-radius:10px;background:var(--surface);color:var(--text-secondary);font-size:12px;font-weight:800;cursor:pointer">
+                <option value="">全部月份</option>
+              </select>
+            </div>
+            <div id="assetChangeRecords"></div>
+          </div>
+          <div class="asset-ledger-right">
+            <div id="assetChartOverview" class="asset-chart-overview"></div>
+            <div class="asset-snapshot-form">
+              <div class="asset-form-row1">
+                <input type="date" id="assetSnapshotDate">
+                <input type="time" id="assetSnapshotTime">
+                <input type="number" id="assetSnapshotAmount" step="0.01" placeholder="总资产金额">
+              </div>
+              <div class="asset-form-row2">
+                <input type="text" id="assetSnapshotNote" maxlength="60" placeholder="备注（可选）">
+              </div>
+              <button id="assetSnapshotAddBtn">记一笔总资产</button>
+            </div>
+            <div id="assetChangeChart" class="asset-chart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page hide" id="pageInvestment">
+      <div class="sub-back-btn" onclick="switchPage('home')">返回</div>
+      <div class="investment-page-head">
+        <div class="section-title">📈 投资理财收益</div>
+      </div>
+      <div class="investment-top-grid">
+        <div class="stats-summary-card">
+          <div class="stats-summary-title" style="display:none">上月投资收益</div>
+          <div class="stats-summary-grid">
+            <div class="ss-item">
+              <div class="ss-label">上月收益</div>
+              <div class="ss-value income" id="investMonthProfit">¥0.00</div>
+            </div>
+            <div class="ss-item">
+              <div class="ss-label">今年收益</div>
+              <div class="ss-value income" id="investYearProfit">¥0.00</div>
+            </div>
+            <div class="ss-item invest-total-item">
+              <div class="ss-label">累计收益</div>
+              <div class="ss-value income" id="investTotalProfit">¥0.00</div>
+            </div>
+          </div>
+          <div class="stats-sub-info">
+            <div class="investment-actions investment-card-actions">
+              <button class="btn-primary investment-add-btn" id="btnAddInvestment">➕ 单笔记录投资</button>
+              <button class="btn-primary investment-batch-btn" id="btnBatchInvestment">📚 批量记录投资</button>
+            </div>
+          </div>
+        </div>
+        <div class="list-card invest-calendar-card">
+          <div class="invest-calendar-head">
+            <div class="section-title">📅 投资月历</div>
+            <div class="invest-calendar-nav">
+              <button class="cal-nav-btn" id="investYearPrev" title="上一年">‹</button>
+              <span id="investCalendarYear">2026年</span>
+              <button class="cal-nav-btn" id="investYearNext" title="下一年">›</button>
+            </div>
+          </div>
+          <div class="invest-calendar-grid" id="investCalendarGrid"></div>
+        </div>
+      </div>
+      <div class="investment-lower-grid">
+        <div class="list-card investment-record-card">
+          <div class="section-title" style="padding:16px 16px 8px">收益记录 <span class="rank-hint">双击记录可修改</span></div>
+          <div id="investmentList"></div>
+        </div>
+        <div class="list-card investment-analysis-card">
+          <div class="section-title" style="padding:16px 16px 8px">📊 投资分析 <span class="rank-hint">按投资收益记录自动计算</span></div>
+          <div id="investAnalysisPanel" style="padding:0 14px 14px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 设置页 -->
+    <div class="page hide" id="pageSettings">
+      <div class="sub-back-btn" onclick="switchPage('home')">返回</div>
+      <div class="settings-main">
+        <!-- 用户信息卡片 -->
+        <div class="user-info-card" id="userInfoCard">
+          <div class="user-info-title">薄荷记账</div>
+          <div class="user-info-stats">
+            <div class="user-stat-item"><div class="user-stat-val" id="userTotalDays">0</div><div class="user-stat-label">记账天数</div></div>
+            <div class="user-stat-item"><div class="user-stat-val" id="userTotalBills">0</div><div class="user-stat-label">记账笔数</div></div>
+          </div>
+        </div>
+        <!-- 快捷功能4宫格 -->
+        <div class="quick-action-grid" id="quickActionGrid">
+          <div class="quick-action-item" onclick="switchPage('settings');document.getElementById('setBudget').scrollIntoView({behavior:'smooth'})"><div class="quick-action-icon">💰</div><div class="quick-action-label">预算管理</div></div>
+          <div class="quick-action-item" onclick="switchPage('accounts')"><div class="quick-action-icon">📒</div><div class="quick-action-label">账本管理</div></div>
+          <div class="quick-action-item" onclick="switchPage('accounts')"><div class="quick-action-icon">💳</div><div class="quick-action-label">账户管理</div></div>
+          <div class="quick-action-item" onclick="document.getElementById('setExportData').click()"><div class="quick-action-icon">📤</div><div class="quick-action-label">导出数据</div></div>
+          <div class="quick-action-item" onclick="openQuickNotesManager()"><div class="quick-action-icon">🏷️</div><div class="quick-action-label">快捷备注</div></div>
+        </div>
+        <div class="section-title">⚙️ 设置</div>
+        <div class="filter-row" style="position:static;margin:0 0 12px;padding:0;background:transparent">
+          <input type="search" id="settingsSearchInput" placeholder="搜索设置：主题、快捷键、备份、预算...">
+        </div>
+        <div class="list-card settings-section" id="settingsData">
+          <div class="setting-group-title">📋 数据管理</div>
+          <div class="tx-item" id="setImport"><div class="tx-main"><div class="tx-title">📥 导入鲨鱼记账数据</div><div class="tx-sub">支持 CSV 格式（鲨鱼记账导出）</div></div><div class="tx-amount">›</div></div>
+          <div class="tx-item" id="setExportData"><div class="tx-main"><div class="tx-title">📤 导出备份</div><div class="tx-sub">导出全部数据为 JSON 文件</div></div><div class="tx-amount">›</div></div>
+
+        </div>
+        <div class="list-card" style="margin-top:12px">
+          <div class="setting-group-title">🎨 外观</div>
+          <div class="tx-item" id="setBudget"><div class="tx-main"><div class="tx-title">💰 修改月预算</div><div class="tx-sub">调整首页本月预算金额</div></div><div class="tx-amount">›</div></div>
+
+          <div class="tx-item" id="setTheme"><div class="tx-main"><div class="tx-title">🌙 深色模式</div><div class="tx-sub">切换深色/浅色主题</div></div><div class="tx-amount">›</div></div>
+          <div class="tx-item" id="setSoundToggle"><div class="tx-main"><div class="tx-title">🔔 交互音效模式</div><div class="tx-sub">关闭 / 轻量 / 完整，默认不播放普通点击声</div></div><div class="tx-amount" id="soundToggleState">›</div></div>
+          <div class="setting-group-title" style="margin-top:12px">📊 首页指标显示</div>
+          <div id="homeIndicatorSettings"></div>
+          <div class="setting-group-title" style="margin-top:12px">🎨 主题色</div>
+          <div id="themeColorSettings" style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 0"></div>
+          <div id="historyPanel" class="side-card-body" style="margin-top:10px"></div>
+        </div>
+        <div class="list-card settings-section" id="settingsBudget" style="margin-top:12px">
+          <div class="setting-group-title">🤖 自动分类规则</div>
+          <div class="rule-row" style="font-size:12px;color:var(--text-tertiary);font-weight:800">
+            <div>备注关键词</div><div>目标分类</div><div>类型</div><div></div>
+          </div>
+          <div id="ruleList"></div>
+          <div class="rule-row">
+            <input id="ruleKeyword" placeholder="如 美团 / 地铁 / 滴滴">
+            <select id="ruleCat"></select>
+            <select id="ruleType"><option value="expense">支出</option><option value="income">收入</option></select>
+            <button id="ruleAddBtn" style="background:var(--primary-soft);color:var(--primary)">添加</button>
+          </div>
+          <div class="rule-test">
+            <input id="ruleTestInput" placeholder="规则测试，如 美团外卖 35">
+            <select id="ruleTestType"><option value="expense">支出</option><option value="income">收入</option></select>
+            <button id="ruleTestBtn">测试</button>
+          </div>
+          <div class="rule-test-result" id="ruleTestResult">输入备注后可查看会匹配到的分类、别名和标签。</div>
+        </div>
+        <div class="list-card settings-section" id="settingsAmountRules" style="margin-top:12px">
+          <div class="setting-group-title">💰 金额智能匹配规则</div>
+          <div class="rule-row" style="font-size:12px;color:var(--text-tertiary);font-weight:800;padding:8px 0">
+            <div style="flex:0.8">金额</div><div style="flex:1">自动备注</div><div style="flex:1">目标分类</div><div style="flex:0.5"></div>
+          </div>
+          <div id="amountRuleList"></div>
+          <div class="rule-row">
+            <input id="amountRuleVal" type="number" step="0.01" placeholder="如 4" style="flex:0.8">
+            <input id="amountRuleNote" placeholder="如 地铁" style="flex:1">
+            <select id="amountRuleCat" style="flex:1"></select>
+            <button id="amountRuleAddBtn" style="background:var(--primary-soft);color:var(--primary);flex:0.5">添加</button>
+          </div>
+        </div>
+        <div class="list-card settings-section" id="settingsSearch" style="margin-top:12px">
+          <div class="setting-group-title">🔎 账单搜索增强</div>
+          <div class="setting-inline" style="display:none">
+            <div>
+              <div class="tx-title" style="font-size:13px">大额支出阈值</div>
+              <div class="tx-sub">超过这个金额的支出会显示“大额”标记，并可在账单页筛选</div>
+            </div>
+            <input type="number" id="largeExpenseInput" min="0" step="1" placeholder="500">
+            <button id="largeExpenseSaveBtn" class="tool-btn">保存</button>
+          </div>
+          <div class="rule-row alias-row" style="font-size:12px;color:var(--text-tertiary);font-weight:800">
+            <div>统一名称</div><div>别名，逗号分隔</div><div></div>
+          </div>
+          <div id="aliasRuleList"></div>
+          <div class="rule-row alias-row">
+            <input id="aliasTargetInput" placeholder="如 喝酒">
+            <input id="aliasWordsInput" placeholder="如 酒、啤酒、夜宵喝酒">
+            <button id="aliasAddBtn" style="background:var(--primary-soft);color:var(--primary)">添加</button>
+          </div>
+        </div>
+        <div class="list-card settings-section" id="settingsColumns" style="margin-top:12px">
+          <div class="setting-group-title">📋 表格列设置</div>
+          <div id="columnSettings"></div>
+        </div>
+        <div class="list-card settings-section" id="settingsShortcuts" style="margin-top:12px">
+          <div class="setting-group-title">⌨️ 快捷键说明 <span style="font-size:11px;color:var(--text-tertiary);font-weight:400">（点击快捷键可自定义）</span></div>
+          <div class="mini-action-row" style="padding:8px 14px 0"><button onclick="resetShortcutKeys()">恢复默认快捷键</button><span id="shortcutConflictTip" class="rank-hint"></span></div>
+          <div class="shortcut-grid" id="shortcutGrid">
+            <div class="shortcut-item" data-action="new_expense"><span class="shortcut-key">N</span><span class="shortcut-desc">新增支出</span></div>
+            <div class="shortcut-item" data-action="new_income"><span class="shortcut-key">I</span><span class="shortcut-desc">新增收入</span></div>
+            <div class="shortcut-item" data-action="new_transfer"><span class="shortcut-key">T</span><span class="shortcut-desc">新增转账</span></div>
+            <div class="shortcut-item" data-action="new_invest"><span class="shortcut-key">V</span><span class="shortcut-desc">新增投资收益</span></div>
+            <div class="shortcut-item" data-action="asset_snapshot"><span class="shortcut-key">W</span><span class="shortcut-desc">记录总资产</span></div>
+            <div class="shortcut-item" data-action="search"><span class="shortcut-key">/</span><span class="shortcut-desc">搜索账单</span></div>
+            <div class="shortcut-item" data-action="page_home"><span class="shortcut-key">A</span><span class="shortcut-desc">首页</span></div>
+            <div class="shortcut-item" data-action="page_bills"><span class="shortcut-key">S</span><span class="shortcut-desc">账单</span></div>
+            <div class="shortcut-item" data-action="page_investment"><span class="shortcut-key">D</span><span class="shortcut-desc">投资</span></div>
+            <div class="shortcut-item" data-action="page_stats"><span class="shortcut-key">F</span><span class="shortcut-desc">统计</span></div>
+            <div class="shortcut-item" data-action="page_accounts"><span class="shortcut-key">G</span><span class="shortcut-desc">账户</span></div>
+            <div class="shortcut-item" data-action="page_settings"><span class="shortcut-key">H</span><span class="shortcut-desc">设置</span></div>
+            <div class="shortcut-item" data-action="refresh"><span class="shortcut-key">R</span><span class="shortcut-desc">刷新当前页</span></div>
+            <div class="shortcut-item" data-action="command_palette"><span class="shortcut-key">Ctrl + F</span><span class="shortcut-desc">命令面板</span></div>
+            <div class="shortcut-item" data-action="sync_save"><span class="shortcut-key">Ctrl + S</span><span class="shortcut-desc">立即同步保存</span></div>
+            <div class="shortcut-item" data-action="shortcut_guide"><span class="shortcut-key">Ctrl / Ctrl + /</span><span class="shortcut-desc">打开快捷键说明</span></div>
+            <div class="shortcut-item" data-action="save_modal"><span class="shortcut-key">Ctrl + Enter</span><span class="shortcut-desc">保存记账弹窗</span></div>
+            <div class="shortcut-item" data-action="esc"><span class="shortcut-key">Esc</span><span class="shortcut-desc">关闭弹窗/取消选择</span></div>
+            <div class="shortcut-item" data-action="calendar"><span class="shortcut-key">← / →</span><span class="shortcut-desc">首页日历切换</span></div>
+            <div class="shortcut-item" data-action="double_click"><span class="shortcut-key">双击</span><span class="shortcut-desc">编辑账单或总资产记录</span></div>
+          </div>
+        </div>
+        <div class="list-card" style="margin-top:12px">
+          <div class="setting-group-title">🧹 回收站 / 数据体检</div>
+          <div id="healthPanel" class="side-card-body"></div>
+          <div id="trashPanel" class="side-card-body"></div>
+        </div>
+        <div class="list-card" style="margin-top:12px">
+          <div class="setting-group-title">ℹ️ 关于</div>
+          <div id="versionInfoPanel"></div>
+        </div>
+      </div>
+      <!-- 右侧边栏 -->
+      <div class="settings-sidebar">
+        <div class="side-card">
+          <div class="side-card-title">⚙️ 设置目录</div>
+          <div class="settings-nav" id="settingsNav">
+            <button data-settings-jump="settingsData">📋 数据管理</button>
+            <button data-settings-jump="settingsBudget">🤖 自动规则</button>
+            <button data-settings-jump="settingsSearch">🔎 搜索增强</button>
+            <button data-settings-jump="settingsColumns">📋 表格列设置</button>
+            <button data-settings-jump="settingsShortcuts">⌨️ 快捷键说明</button>
+          </div>
+        </div>
+        <div class="side-card">
+          <div class="side-card-title">📊 数据概览</div>
+          <div id="settingsOverview" class="side-card-body"></div>
+        </div>
+        <div class="side-card">
+          <div class="side-card-title">📖 功能说明</div>
+          <div id="settingsGuideBody" class="side-card-body" style="max-height:460px;overflow-y:auto;font-size:13px;line-height:1.8;color:var(--text-secondary)"></div>
+        </div>
+      </div>
+      <input type="file" id="importFile" accept=".csv" style="display:none">
+    </div>
+
+    <!-- 搜索页（全屏覆盖层） -->
+    <div class="page hide" id="pageSearch">
+      <div class="search-page">
+        <div class="search-topbar">
+          <div class="search-filter-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>筛选</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <div class="search-input-wrap">
+            <input type="text" id="searchInput" placeholder="搜索类别/标签/备注/金额" oninput="doSearch()">
+          </div>
+          <button class="cal-close-btn" onclick="closeSearch()" title="关闭">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+          </button>
+        </div>
+        <div class="search-content">
+          <div class="search-empty" id="searchEmpty">
+            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <span>暂无数据</span>
+          </div>
+          <div class="search-results" id="searchResults" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 日历页 -->
+    <div class="page hide" id="pageCalendar">
+      <div class="calendar-page">
+        <div class="calendar-topbar">
+          <button class="cal-nav-btn" onclick="prevCalMonth()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <div class="cal-month-title" id="calMonthTitle" onclick="showCalMonthPicker()">
+            <span id="calMonthText">2026年07月</span>
+          </div>
+          <button class="cal-nav-btn" onclick="nextCalMonth()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <select class="cal-book-select" id="calBookSelect" onchange="renderCalendar()">
+            <option value="all">全部账本</option>
+          </select>
+          <button class="cal-close-btn" onclick="closeCalendar()" title="关闭">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+          </button>
+        </div>
+        <div class="cal-body">
+          <div class="cal-weekdays">
+            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+          </div>
+          <div class="cal-grid" id="calGridPage"></div>
+        </div>
+        <div class="cal-sheet" id="calSheet">
+          <div class="cal-sheet-handle"></div>
+          <div class="cal-bills-header" id="calBillsHeader">
+            <span id="calBillsDate">07月06日 星期一</span>
+            <span class="cal-bills-total" id="calBillsTotal">支出：25.86</span>
+          </div>
+          <div class="cal-bills-list" id="calBillsList"></div>
+          <button class="cal-add-btn" onclick="addBillFromCalendar()">＋ 记一笔</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+  </main><!-- /main -->
+</div><!-- /app -->
+
+<!-- 底部导航 -->
+<nav class="bottom-nav">
+  <button class="bot-tab active" data-page="home"><span class="tab-icon">🏠</span><span>首页</span><span class="nav-kbd">A</span></button>
+  <button class="bot-tab" data-page="bills"><span class="tab-icon">📝</span><span>账单</span><span class="nav-kbd">S</span></button>
+  <button class="bot-tab" data-page="investment"><span class="tab-icon">📈</span><span>投资</span><span class="nav-kbd">D</span></button>
+  <button class="bot-tab fab-add" id="botAddBtn" onclick="openTx('expense')"><span class="tab-icon">记一笔</span></button>
+  <button class="bot-tab" data-page="stats"><span class="tab-icon">📊</span><span>统计</span><span class="nav-kbd">F</span></button>
+  <button class="bot-tab" data-page="accounts"><span class="tab-icon">💳</span><span>账户</span><span class="nav-kbd">G</span></button>
+  <button class="bot-tab" data-page="settings"><span class="tab-icon">⚙️</span><span>设置</span><span class="nav-kbd">H</span></button>
+</nav>
+
+<!-- 全屏登录页 -->
+<div class="modal login-fullscreen" id="loginModal">
+  <div class="login-shell">
+    <section class="login-hero">
+      <div class="login-badge">🌿 私人账本 · 安全访问</div>
+      <h1 class="login-title">TT生活<span>日常记账</span></h1>
+      <p class="login-subtitle">记录日常收支、账户变化和投资收益，把每一笔钱都整理成清晰的生活轨迹。</p>
+      <div class="login-visual" aria-hidden="true">
+        <div class="login-board"><div class="login-board-lines"></div></div>
+        <div class="login-chart"></div>
+        <div class="login-lock"></div>
+        <div class="login-coin one">¥</div>
+        <div class="login-coin two">✓</div>
+      </div>
+    </section>
+    <section class="login-panel">
+      <div class="login-card">
+        <div class="login-card-head">
+          <div class="login-logo">TT</div>
+          <div>
+            <div class="login-card-title">进入账本</div>
+            <div class="login-card-desc">验证访问密码后继续</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>访问密码</label>
+          <div class="login-password-row">
+            <input type="password" id="loginPassword" placeholder="请输入访问密码" autocomplete="current-password">
+            <button type="button" class="icon-btn-sm" id="toggleLoginPwd" title="显示/隐藏密码">👁</button>
+          </div>
+        </div>
+        <div class="login-tip">密码只保存在当前浏览器会话中，用于访问服务器数据接口；退出登录后会自动清除。</div>
+        <button class="btn-primary" id="loginBtn">进入 TT 账本</button>
+        <div class="login-footer">快捷、安全、清晰地管理你的日常生活账</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="modal" id="txModal">
+  <div class="modal-sheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="txTitle">记一笔</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="icon-btn-sm voice-btn" id="txVoiceBtn" title="语音记账：说\"午餐28元\"自动填入">🎤</button>
+        <button class="icon-btn-sm" id="txSettingsBtn" title="记账设置">⚙️</button>
+        <button class="icon-btn-sm" id="txClose">✕</button>
+      </div>
+      <div class="voice-hint" id="txVoiceHint">正在听...</div>
+    </div>
+    <div class="sheet-body" style="position:relative">
+      <!-- 记账设置面板 -->
+      <div id="txSettingsPanel" style="display:none;position:absolute;inset:0;background:var(--surface);z-index:20;padding:20px;overflow-y:auto;border-radius:0 0 var(--radius) var(--radius)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div class="sheet-title">⚙️ 记账设置</div>
+          <button class="icon-btn-sm" id="txSettingsClose">✕</button>
+        </div>
+        <div class="setting-section" style="margin-bottom:20px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px">📋 字段排序</div>
+          <div id="txFieldOrderList" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="setting-section" style="margin-bottom:20px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px">🏷️ 分类管理</div>
+          <div id="txCatManageList" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="setting-section" style="margin-bottom:20px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px">💰 金额智能匹配</div>
+          <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:8px">输入指定金额时自动填充备注和分类</div>
+          <div id="txAmountRuleList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
+          <div style="display:flex;gap:6px">
+            <input type="number" id="txAmountRuleVal" step="0.01" placeholder="金额" style="flex:1;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)">
+            <input type="text" id="txAmountRuleNote" placeholder="备注" style="flex:1.2;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)">
+            <select id="txAmountRuleCat" style="flex:1.5;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)"></select>
+            <button id="txAmountRuleAddBtn" style="flex:0.6;height:36px;background:var(--primary-soft);color:var(--primary);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">添加</button>
+          </div>
+        </div>
+        <div class="setting-section">
+          <div style="font-size:14px;font-weight:700;margin-bottom:10px">🏦 账户显示</div>
+          <div id="txAccManageList" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+      </div>
+      <div class="type-pills" id="typePills">
+        <div class="pill active" data-type="expense">支出</div>
+        <div class="pill" data-type="income">收入</div>
+        <div class="pill" data-type="transfer">转账</div>
+        <div class="pill" data-type="invest">投资收益</div>
+      </div>
+      <div class="field" id="txAmountField" style="display:none">
+        <input type="text" inputmode="decimal" class="amount-input" id="txAmount" placeholder="0.00 或 12+8.5">
+        <div class="calc-hint" id="txAmountHint"></div>
+      </div>
+      <div class="field" id="txMainGrid" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="txGridInner">
+          <div class="tx-grid-item" id="txGridOriginal" data-field="original">
+            <label>原价</label>
+            <input type="number" inputmode="decimal" id="txOriginalPrice" step="0.01" placeholder="原价金额" style="width:100%" oninput="calcDiscount()">
+            <div class="calc-hint" id="txOriginalHint"></div>
+          </div>
+          <div class="tx-grid-item" data-field="desc">
+            <label>备注</label>
+            <input type="text" id="txDesc" placeholder="填写备注" maxlength="60" style="width:100%">
+          </div>
+          <div class="tx-grid-item" id="txGridActual" data-field="actual">
+            <label>优惠</label>
+            <input type="number" inputmode="decimal" id="txActualPay" step="0.01" placeholder="优惠金额" style="width:100%" oninput="calcDiscount()">
+            <div class="calc-hint" id="txActualHint"></div>
+          </div>
+          <div class="tx-grid-item" data-field="date">
+            <label>日期</label>
+            <input type="date" id="txDate" style="width:100%">
+          </div>
+        </div>
+        <div id="discountResult" style="font-size:13px;color:var(--income);font-weight:600;padding:2px 0"></div>
+      </div>
+      <div class="field hide" id="rateField">
+        <label>收益率（可选）</label>
+        <input type="number" id="txRate" step="0.01" placeholder="例如 2.5 表示 +2.5%">
+      </div>
+      <div class="field" id="catField">
+        <label>分类</label>
+        <div class="cat-pills" id="catPills"></div>
+      </div>
+      <div style="display:flex;gap:10px" id="accDateRow">
+        <div class="field" id="accField" style="flex:1;min-width:0">
+          <label>账户</label>
+          <select id="txAccount"></select>
+        </div>
+        <div class="field hide" id="toAccField" style="flex:1;min-width:0">
+          <label>转入账户 <button type="button" class="mini-btn" id="swapTransferAcc" title="交换转出/转入账户">↔</button></label>
+          <select id="txToAccount"></select>
+        </div>
+      </div>
+      <div class="field">
+        <div class="quick-notes" id="quickNotes"></div>
+      </div>
+      <div class="field">
+        <label>心情</label>
+        <div class="mood-row" id="moodRow">
+          <button class="mood-btn" data-mood="happy">😊</button>
+          <button class="mood-btn" data-mood="normal">😐</button>
+          <button class="mood-btn" data-mood="sad">😔</button>
+          <button class="mood-btn" data-mood="angry">😤</button>
+          <button class="mood-btn" data-mood="excited">🤩</button>
+        </div>
+      </div>
+      <div id="txEditPreview" style="display:none;padding:8px 16px;background:var(--bg-warm);border-radius:10px;margin:8px 16px 0;font-size:13px;color:var(--text-secondary)"></div>
+      <button class="btn-primary" id="txSave">💾 保存记录</button>
+      <button class="btn-secondary" id="txSaveAnother" style="display:none;margin-top:8px">再记一笔</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导入预览弹窗 -->
+<div class="modal" id="importPreviewModal">
+  <div class="modal-sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">导入前预览</div>
+      <button class="icon-btn-sm" id="importPreviewClose">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div id="importPreviewBody"></div>
+      <button class="btn-primary" id="importPreviewConfirm" style="margin-top:14px">确认导入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 总资产记录编辑弹窗 -->
+<div class="modal" id="assetEditModal">
+  <div class="modal-sheet" style="max-width:520px">
+    <div class="sheet-head">
+      <div class="sheet-title">编辑总资产记录</div>
+      <button class="icon-btn-sm" id="assetEditClose">✕</button>
+    </div>
+    <div class="sheet-body">
+      <input type="hidden" id="assetEditId">
+      <div class="field">
+        <label>记录日期</label>
+        <input type="date" id="assetEditDate">
+      </div>
+      <div class="field">
+        <label>记录时间</label>
+        <input type="time" id="assetEditTime">
+      </div>
+      <div class="field">
+        <label>总资产金额</label>
+        <input type="number" class="amount-input" id="assetEditAmount" step="0.01" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label>备注</label>
+        <input type="text" id="assetEditNote" maxlength="60" placeholder="备注（可选）">
+      </div>
+      <button class="btn-primary" id="assetEditSave">💾 保存修改</button>
+      <button class="btn-secondary" id="assetEditDelete" style="margin-top:10px;background:var(--expense-soft);color:var(--expense);border-color:var(--expense)">🗑 删除记录</button>
+    </div>
+  </div>
+</div>
+
+<!-- 记总资产弹窗（手机端使用） -->
+<div class="modal" id="assetSnapshotModal">
+  <div class="modal-sheet" style="max-width:420px">
+    <div class="sheet-head">
+      <div class="sheet-title">记一笔总资产</div>
+      <button class="icon-btn-sm" id="assetSnapshotClose">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="asset-snapshot-form" style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:block">
+          <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">日期</label>
+          <input type="date" id="modalAssetSnapshotDate" style="width:100%;height:44px;box-sizing:border-box;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;background:var(--surface);color:var(--text);font-weight:700">
+        </div>
+        <div style="display:block">
+          <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">金额</label>
+          <input type="number" id="modalAssetSnapshotAmount" step="0.01" placeholder="请输入金额" style="width:100%;height:44px;box-sizing:border-box;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;background:var(--surface);color:var(--text);font-weight:700">
+        </div>
+        <div style="display:block">
+          <label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">备注</label>
+          <input type="text" id="modalAssetSnapshotNote" maxlength="60" placeholder="选填" style="width:100%;height:44px;box-sizing:border-box;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:13px;background:var(--surface);color:var(--text);font-weight:700">
+        </div>
+        <button class="btn-primary" id="modalAssetSnapshotAddBtn" style="width:100%;padding:12px;font-size:14px;border-radius:12px">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 批量投资收益弹窗 -->
+<div class="modal" id="investBatchModal">
+  <div class="modal-sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">批量添加投资收益</div>
+      <button class="icon-btn-sm" id="investBatchClose">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div id="investBatchRows"></div>
+      <button class="btn-primary investment-batch-btn" id="investBatchAddRow" style="width:100%;margin-bottom:10px">➕ 再加一笔</button>
+      <button class="btn-primary" id="investBatchSave">💾 保存全部</button>
+    </div>
+  </div>
+</div>
+
+<!-- 账户弹窗 -->
+<div class="modal" id="accModal">
+  <div class="modal-sheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="accTitle">添加账户</div>
+      <button class="icon-btn-sm" id="accClose">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field"><label>账户名称</label><input type="text" id="accName" placeholder="如：工资卡"></div>
+      <div class="field"><label>类型</label>
+        <select id="accType">
+          <option value="cash">💵 现金</option>
+          <option value="savings">🏦 储蓄卡</option>
+          <option value="investment">📈 投资账户</option>
+          <option value="debt">📉 负债</option>
+          <option value="receivable">🤝 债权</option>
+          <option value="custom">📦 自定义资产</option>
+        </select>
+      </div>
+      <div class="field"><label id="accBalanceLabel">初始余额</label><input type="number" id="accBalance" step="0.01" placeholder="0.00"></div>
+      <button class="btn-primary" id="accSave">✅ 添加账户</button>
+    </div>
+  </div>
+</div>
+
+<!-- 本月预算弹窗 -->
+<div class="modal" id="budgetModal">
+  <div class="modal-sheet" style="max-width:420px">
+    <div class="sheet-head">
+      <div class="sheet-title">修改本月预算</div>
+      <button class="icon-btn-sm" id="budgetClose">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field">
+        <label>预算金额</label>
+        <input type="number" id="budgetInput" step="0.01" min="0" placeholder="请输入本月预算">
+      </div>
+      <button class="btn-primary" id="budgetSave">保存预算</button>
+    </div>
+  </div>
+</div>
+
+<!-- 确认弹窗 -->
+<div class="confirm" id="confirmDlg">
+  <div class="confirm-card">
+    <div class="confirm-icon">🗑</div>
+    <div class="confirm-title">确认删除</div>
+    <div class="confirm-msg">这条记录将被彻底删除，并从数据文件中移除。</div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="cfCancel">取消</button>
+      <button class="confirm-danger" id="cfOk">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 空账本提示弹窗 -->
+<div class="confirm" id="blankModeAlert">
+  <div class="confirm-card blank-alert-card">
+    <div class="confirm-icon blank-alert-icon">🔒</div>
+    <div class="confirm-title">你已进入空账本页面</div>
+    <div class="confirm-msg">当前页面不会加载真实账本数据，也不会同步或覆盖你的真实数据。</div>
+    <div class="blank-alert-countdown" id="blankModeCountdown">5 秒后自动关闭</div>
+    <div class="confirm-actions">
+      <button class="confirm-danger blank-alert-ok" id="blankModeAlertOk">知道了（5）</button>
+    </div>
+  </div>
+</div>
+
+<!-- 余额校准确认弹窗 -->
+<div class="confirm" id="balCalibrateDlg" style="display:none">
+  <div class="confirm-card" style="max-width:360px">
+    <div class="confirm-icon">⚖️</div>
+    <div class="confirm-title" id="balCalTitle">余额校准</div>
+    <div class="confirm-msg" id="balCalMsg"></div>
+    <div style="padding:0 20px 12px">
+      <label style="font-size:12px;color:var(--text-tertiary)">校准原因（可选）</label>
+      <input type="text" id="balCalReason" placeholder="如：手动核对发现差异" maxlength="60" style="width:100%;margin-top:4px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text-primary);outline:none;box-sizing:border-box">
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" id="balCalCancel">取消</button>
+      <button class="confirm-danger" id="balCalOk" style="background:var(--primary);color:#fff">确认校准</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- 成功动画 -->
+<div class="success-anim" id="successAnim">
+  <div class="coin" id="successCoin">💰</div>
+</div>
+
+<!-- 快捷键提示浮层 -->
+<div class="shortcut-tip" id="shortcutTip">
+  <button class="shortcut-tip-close" id="shortcutTipClose">✕</button>
+  <div class="shortcut-tip-title">⌨️ 常用快捷键</div>
+  <div><b>N</b> 记支出 &nbsp; <b>I</b> 记收入 &nbsp; <b>T</b> 转账</div>
+  <div><b>Enter</b> 保存 &nbsp; <b>Esc</b> 关闭弹窗</div>
+  <div><b>Ctrl+F</b> 命令面板 &nbsp; <b>Ctrl+/</b> 快捷键指南</div>
+  <div><b>A/S/D/F/G/H</b> 切换页面</div>
+  <div style="margin-top:6px;font-size:11px;color:var(--text-tertiary)">按 ? 或 Ctrl+/ 查看全部快捷键</div>
+</div>
+
+<div class="command-palette" id="commandPalette">
+  <div class="command-box">
+    <input id="commandInput" placeholder="输入命令：新增支出、搜索账单、导入、备份、设置...">
+    <div class="command-list" id="commandList"></div>
+  </div>
+</div>
+
+<script src="./js/echarts.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/main.js"></script>
+
+<!-- PWA Service Worker 注册 -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch((err) => {
+        console.warn('SW 注册失败（非 HTTPS 环境不影响正常使用）:', err.message);
+      });
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+node_modules/
+package-lock.json
+data.json
+*.log
+.DS_Store
+Thumbs.db
+*.bak
+backup/
+*.html2
+index-副本.html
+*.xcarchive/
+ios/App/build/
+ios/App/output/
+ios/App/Pods/
+ios/App/App.xcworkspace
