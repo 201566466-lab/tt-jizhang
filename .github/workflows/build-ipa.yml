@@ -1,0 +1,63 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install Cordova
+      run: |
+        npm install -g cordova
+        
+    - name: Install dependencies
+      run: |
+        npm install
+        
+    - name: Add iOS platform
+      run: |
+        cordova platform add ios
+        
+    - name: Build iOS
+      run: |
+        cordova build ios --release --device
+        
+    - name: Create IPA (unsigned)
+      run: |
+        cd platforms/ios/build/device
+        mkdir -p Payload
+        cp -r *.app Payload/
+        zip -r TT日常记账-unsigned.ipa Payload
+        
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: TT日常记账-unsigned-ipa
+        path: platforms/ios/build/device/TT日常记账-unsigned.ipa
+        
+    - name: Release IPA
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: platforms/ios/build/device/TT日常记账-unsigned.ipa
+        tag_name: v${{ github.run_number }}
+        name: Release v${{ github.run_number }}
+        body: |
+          TT日常记账 iOS 应用 (未签名)
+          适用于越狱设备
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

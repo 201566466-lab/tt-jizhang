@@ -1,0 +1,45 @@
+@media(max-width:1023px){
+  body{overflow:hidden}
+  .app{height:100dvh;min-height:0;display:flex;flex-direction:column;padding-bottom:0;overflow:hidden}
+  .topbar{position:relative;flex-shrink:0}
+  .main{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding-bottom:84px}
+  .pages-wrap{flex:1;height:100%;min-height:0;overflow:hidden}
+  .page:not(.hide){flex:1;height:100%!important;max-height:100%!important;min-height:0;overflow:hidden}
+  #pageHome{overflow-y:auto;overscroll-behavior:contain;padding-bottom:8px}
+  #pageBills,
+  #pageInvestment,
+  #pageAccounts,
+  #pageSettings{display:flex;flex-direction:column;min-height:0}
+  #pageBills .bills-tabs,
+  #pageInvestment .investment-page-head,
+  #pageInvestment .investment-top-grid,
+  #pageInvestment .investment-lower-grid,
+  #pageAccounts > .section-title,
+  #pageSettings .settings-main > .section-title{flex-shrink:0}
+  #pageBills .bills-panel{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  #pageBills #billsPanelDay > div:first-child,
+  #pageBills #billCatFilter,
+  #pageBills #monthBillSummary,
+  #pageBills #billsPanelYear > .month-bill-month-nav,
+  #pageBills #yearBillSummary{flex-shrink:0}
+  #pageBills #billsList,
+  #pageBills #monthBillCats,
+  #pageBills #yearBillMonths,
+  #pageInvestment #investmentList,
+  #pageAccounts #accountsList,
+  #pageSettings .settings-main,
+  #pageStats{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+  #pageInvestment .investment-record-card{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+  #pageInvestment .investment-record-card .section-title{flex-shrink:0}
+  #pageInvestment .investment-top-grid{min-height:0;overflow:visible}
+  #pageInvestment .investment-lower-grid{flex:1;min-height:0}
+  #pageAccounts .accounts-main{flex:1;min-height:0;display:block;overflow-y:auto;overscroll-behavior:contain}
+  #pageAccounts .accounts-list-pane{display:flex;flex-direction:column;min-height:320px;max-height:420px;overflow:hidden}
+  #pageAccounts #accountsList{flex:1;min-height:0;overflow-y:auto}
+  #pageAccounts #btnAddAccount{flex-shrink:0}
+  #pageAccounts .account-ledger-card{min-height:260px;margin-top:12px}
+  #pageAccounts .account-chart-card{min-height:430px}
+  #pageBills .bills-sidebar,
+  #pageAccounts .accounts-sidebar,
+  #pageSettings .settings-sidebar{display:none}
+}

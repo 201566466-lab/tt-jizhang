@@ -1,0 +1,31 @@
+{
+  "name": "tt-tally-app",
+  "displayName": "TT日常记账",
+  "version": "1.0.0",
+  "description": "简洁美观的日常记账工具",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "TT Team",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "cordova-ios": "^7.1.1"
+  },
+  "cordova": {
+    "platforms": [
+      "ios"
+    ],
+    "plugins": {
+      "cordova-plugin-device": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-inappbrowser": {}
+    }
+  }
+}
