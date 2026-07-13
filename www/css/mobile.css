@@ -1,46 +1,104 @@
 @media(max-width:700px){
-  body{overflow:hidden;background:#ffffff!important}
-  .app{height:100dvh;max-width:none!important;width:100%!important;background:#ffffff!important}
-  /* 手机端顶部导航栏 - 鲨鱼记账黄色风格 */
-  .topbar{padding:0 0;gap:4px;height:52px;background:#F5D547!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:none!important;color:#333!important}
+  /* ===== 基础布局 - APP WebView全屏适配 ===== */
+  html{width:100%;height:100%;margin:0;padding:0;overflow:hidden!important;background:#fff!important;-webkit-text-size-adjust:100%}
+  body{width:100%;height:100%;margin:0;padding:0;overflow:hidden!important;background:#ffffff!important;position:relative}
+  .app{width:100%!important;height:100%!important;max-width:none!important;background:#ffffff!important;overflow:hidden!important;position:relative}
+
+  /* ===== 顶部导航栏 - 鲨鱼记账黄色风格 ===== */
+  /* 使用padding-top留出灵动岛空间 */
+  .topbar{padding:env(safe-area-inset-top) 12px 0!important;gap:8px;height:calc(56px + env(safe-area-inset-top))!important;background:#F5D547!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:none!important;color:#333!important;position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:60!important;display:none;align-items:center!important;box-sizing:border-box!important}
   .dark .topbar{background:#F5D547!important}
   /* 非首页隐藏整个顶部栏 */
-  .topbar{display:none!important}
-  body.home-page .topbar{display:flex!important;gap:4px!important;align-items:center!important}
+  body.home-page .topbar{display:flex!important;gap:8px!important;align-items:center!important}
   .brand{display:none!important}
-  body.home-page .brand{display:flex!important;gap:4px!important}
-  .topbar .brand-icon{width:30px!important;height:30px!important;font-size:16px!important;border-radius:8px!important;margin:0!important}
-  .topbar .brand-text{display:block!important;font-size:18px!important;color:#333!important;background:none!important;-webkit-background-clip:initial!important;-webkit-text-fill-color:initial!important;letter-spacing:0!important;font-weight:400!important}
+  body.home-page .brand{display:flex!important;gap:8px!important;align-items:center!important}
+  .topbar .brand-icon{width:32px!important;height:32px!important;font-size:18px!important;border-radius:10px!important;margin:0!important;background:rgba(255,255,255,.4)!important;display:flex!important;align-items:center!important;justify-content:center!important}
+  .topbar .brand-text{display:block!important;font-size:20px!important;color:#333!important;background:none!important;-webkit-background-clip:initial!important;-webkit-text-fill-color:initial!important;letter-spacing:2px!important;font-weight:600!important}
   .book-chip{display:none}
-  .top-actions{gap:14px;margin-right:16px}
-  .top-tool-btn{width:auto;height:auto;padding:0;border-radius:0;background:transparent!important;border-color:transparent!important;color:#333!important}
+  .top-actions{gap:16px;margin-right:0}
+  .top-tool-btn{width:auto;height:auto;padding:6px;border-radius:8px;background:rgba(255,255,255,.4)!important;border-color:transparent!important;color:#333!important}
   .top-tool-btn .tool-label{display:none}
-  .sync-status{height:26px!important;padding:0 2px!important;font-size:10px!important;gap:2px!important;background:rgba(255,255,255,.5)!important;color:#333!important;border-color:transparent!important}
-  .sync-dot{width:5px!important;height:5px!important;background:#52C41A!important}
+  .sync-status{height:26px!important;padding:0 8px!important;font-size:10px!important;gap:4px!important;background:rgba(255,255,255,.5)!important;color:#333!important;border-color:transparent!important;border-radius:13px!important}
+  .sync-dot{width:6px!important;height:6px!important;background:#52C41A!important;border-radius:50%!important}
   #btnTheme{display:none!important}
   #btnExport{display:none!important}
   #btnRefresh{display:none!important}
   #btnLogout{display:none!important}
-  .mobile-only{display:flex!important;background:transparent!important;border:none!important}
+  .mobile-only{display:flex!important;background:rgba(255,255,255,.4)!important;border:none!important;border-radius:8px!important;padding:6px!important}
   .mobile-only .tool-icon{display:flex;align-items:center;justify-content:center}
   #btnSearch{margin-right:2px}
-  .main{padding:0 0 0}
-  .pages-wrap{height:100%;overflow:hidden}
-  .page:not(.hide){height:100%!important;max-height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;padding-bottom:12px}
 
-  .bottom-nav{bottom:calc(0px + env(safe-area-inset-bottom));left:0;right:0;transform:none;max-width:none;width:100%;justify-content:space-around;border-radius:0!important;padding:4px 0;height:52px;box-shadow:none!important;background:#fff!important;border-top:1px solid #e8e8e8!important;border-left:none!important;border-right:none!important;border-bottom:none!important}
-  .bot-tab{flex:1;min-width:0;padding:6px 2px;font-size:12px;font-weight:700;gap:3px}
-  .bot-tab .tab-icon{font-size:22px}
-  .bot-tab.active{background:transparent!important;color:var(--primary,#6C63FF)!important;box-shadow:none!important;border:none!important;border-radius:0!important;position:relative!important}
-  .bot-tab.active::after{content:'';position:absolute!important;bottom:2px!important;left:50%!important;transform:translateX(-50%)!important;width:25px!important;height:3px!important;background:var(--primary,#6C63FF)!important;border-radius:3px!important}
+  /* ===== 主内容区 - 用padding避开固定顶部栏和底部导航栏 ===== */
+  .main{
+    padding:0!important;
+    height:100%!important;
+    overflow:hidden!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    flex-direction:column!important
+  }
+  /* 首页：顶部栏显示，需要padding-top */
+  body.home-page .main{padding-top:calc(56px + env(safe-area-inset-top))!important;padding-bottom:calc(52px + env(safe-area-inset-bottom))!important}
+  /* 非首页：顶部栏隐藏，只需要底部padding */
+  body:not(.home-page) .main{padding-top:env(safe-area-inset-top)!important;padding-bottom:calc(52px + env(safe-area-inset-bottom))!important}
+  .pages-wrap{flex:1!important;overflow:hidden!important;box-sizing:border-box!important;position:relative!important}
+  .page{position:absolute!important;top:0!important;left:0!important;right:0!important;bottom:0!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch!important}
+
+  /* ===== 底部导航栏 - 固定定位，使用padding-bottom留出home indicator空间 ===== */
+  .bottom-nav{
+    position:fixed!important;
+    bottom:0!important;
+    left:0!important;
+    right:0!important;
+    transform:none!important;
+    max-width:none!important;
+    width:100%!important;
+    justify-content:space-around!important;
+    border-radius:0!important;
+    padding:4px 0 4px!important;
+    padding-bottom:calc(4px + env(safe-area-inset-bottom))!important;
+    height:auto!important;
+    min-height:52px!important;
+    min-height:calc(52px + env(safe-area-inset-bottom))!important;
+    box-shadow:0 -2px 12px rgba(0,0,0,.06)!important;
+    background:#fff!important;
+    border-top:1px solid #f0f0f0!important;
+    border-left:none!important;
+    border-right:none!important;
+    border-bottom:none!important;
+    z-index:999!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:0!important;
+    box-sizing:border-box!important;
+    margin:0!important;
+  }
+  .bottom-nav .bot-tab{flex:1!important;min-width:0!important;padding:6px 2px!important;font-size:11px!important;font-weight:400!important;gap:3px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;color:#999!important;background:transparent!important;border:none!important;border-radius:0!important;transition:none!important}
+  .bottom-nav .bot-tab .tab-icon{font-size:22px!important;margin-bottom:2px!important;line-height:1!important}
+  .bottom-nav .bot-tab .nav-kbd{display:none!important}
+  .bottom-nav .bot-tab.active{background:transparent!important;color:#F5D547!important;box-shadow:none!important;border:none!important;border-radius:0!important;position:relative!important}
+  .bottom-nav .bot-tab.active::after{content:'';position:absolute!important;bottom:2px!important;left:50%!important;transform:translateX(-50%)!important;width:25px!important;height:3px!important;background:#F5D547!important;border-radius:3px!important}
   /* 手机端隐藏投资和账户Tab */
-  .bot-tab[data-page="investment"],.bot-tab[data-page="accounts"]{display:none!important}
-  /* 手机端悬浮记账按钮 - 精致设计 */
-  .bot-tab.fab-add{display:flex!important;align-items:center!important;justify-content:center!important;position:relative;width:auto!important;height:38px!important;flex:0 0 auto!important;padding:0 16px!important;border-radius:19px!important;background:linear-gradient(135deg,#6C63FF 0%,#8B5CF6 50%,#A78BFA 100%)!important;color:#fff!important;box-shadow:0 2px 8px rgba(108,99,255,.3),0 4px 20px rgba(108,99,255,.2),inset 0 1px 0 rgba(255,255,255,.25)!important;border:1.5px solid rgba(255,255,255,.35)!important;text-shadow:0 1px 2px rgba(0,0,0,.15)!important;transform:translateY(-2px)!important;-webkit-touch-callout:none!important;-webkit-user-select:none!important;user-select:none!important}
-  .bot-tab.fab-add .tab-icon{font-size:13px!important;line-height:38px!important;font-weight:600!important;letter-spacing:1px!important}
+  .bottom-nav .bot-tab[data-page="investment"],.bottom-nav .bot-tab[data-page="accounts"]{display:none!important}
+  /* 手机端悬浮记账按钮 - 鲨鱼记账黄色风格 */
+  .bottom-nav .bot-tab.fab-add{display:flex!important;align-items:center!important;justify-content:center!important;position:relative!important;width:auto!important;height:48px!important;flex:0 0 auto!important;padding:0 24px!important;border-radius:24px!important;background:#F5D547!important;color:#333!important;box-shadow:0 6px 20px rgba(245,213,71,.45),0 10px 40px rgba(245,213,71,.35)!important;border:none!important;text-shadow:none!important;transform:translateY(-10px)!important;-webkit-touch-callout:none!important;-webkit-user-select:none!important;user-select:none!important;font-weight:700!important}
+  .bottom-nav .bot-tab.fab-add .tab-icon{font-size:17px!important;line-height:48px!important;font-weight:700!important;letter-spacing:2px!important}
   .dark .bot-tab.fab-add{border-color:rgba(255,255,255,.2)!important}
 
-  #pageHome{display:flex;flex-direction:column;padding:0!important;overflow:hidden!important}
+  /* ===== iOS 键盘适配：防止页面整体被顶上去 ===== */
+  /* 使用 100dvh（动态视口高度）替代 100vh，iOS 键盘弹出时自动收缩 */
+  html,body,.app{height:100dvh!important;height:100svh!important}
+  body.keyboard-open,.app.keyboard-open{overflow:hidden!important}
+  /* 键盘弹出时：隐藏底部导航 + 去掉底部padding */
+  body.keyboard-open .bottom-nav{display:none!important}
+  body.keyboard-open .main{padding-bottom:0!important;overflow:hidden!important}
+  body.keyboard-open .page{overflow-y:hidden!important}
+  /* 键盘弹出时，防止顶部导航被顶走 */
+  body.keyboard-open .topbar{position:absolute!important}
+  body.keyboard-open .pages-wrap{height:calc(100dvh - env(safe-area-inset-top) - 56px)!important}
+  body.keyboard-open .pages-wrap{height:calc(100svh - env(safe-area-inset-top) - 56px - env(safe-area-inset-bottom))!important}
+
+  #pageHome{display:flex!important;flex-direction:column;padding:0!important;overflow:hidden!important;height:100%!important;max-height:100%!important}
   .page{padding:0!important}
   #pageHome .col-main{order:1;display:flex!important;flex-direction:column;flex:1;min-height:0;overflow:hidden}
   #pageHome .col-side{display:none!important}
@@ -55,35 +113,48 @@
   #pageHome .wallet-row{display:none!important}
   #pageHome .wallet-budget-item{display:none!important}
   /* 手机端顶部汇总行：年月 + 收入 + 支出 — 鲨鱼记账重构 */
-  #pageHome .wallet-summary-bar{display:flex!important;align-items:stretch!important;padding:0!important;height:60px!important;background:#F5D547!important}
-  #pageHome .ws-month{flex:0 0 90px!important;margin-right:auto!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;padding:0 0 0 12px}
-  #pageHome .ws-month select{font-size:15px!important;font-weight:400!important;color:#333!important;background:transparent!important;border:none!important;padding:0 20px 0 0!important;cursor:pointer!important;appearance:none!important;-webkit-appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 2px bottom center!important}
-  #pageHome .ws-income,#pageHome .ws-expense{display:flex!important;flex:1!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;border-left:1px solid rgba(0,0,0,.15)!important;padding-left:6px!important}
-  #pageHome .ws-label{font-size:12px!important;font-weight:400!important;color:#666!important}
-  #pageHome .ws-val{font-size:20px!important;font-weight:400!important;color:#333!important}
+  #pageHome .wallet-summary-bar{display:flex!important;align-items:stretch!important;padding:0!important;height:64px!important;background:#F5D547!important;border-bottom:1px solid rgba(0,0,0,.08)!important}
+  #pageHome .ws-month{flex:0 0 95px!important;margin-right:auto!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;padding:0 0 0 16px}
+  #pageHome .ws-month select{font-size:16px!important;font-weight:600!important;color:#333!important;background:transparent!important;border:none!important;padding:0 20px 0 0!important;cursor:pointer!important;appearance:none!important;-webkit-appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 0 bottom center!important}
+  #pageHome .ws-month .ws-year{font-size:11px!important;color:#666!important;margin-bottom:2px!important}
+  #pageHome .ws-month .ws-month-val{font-size:20px!important;font-weight:600!important;color:#333!important}
+  #pageHome .ws-income,#pageHome .ws-expense{display:flex!important;flex:1!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;border-left:1px solid rgba(0,0,0,.12)!important;padding-left:0!important}
+  #pageHome .ws-label{font-size:13px!important;font-weight:400!important;color:#666!important;margin-bottom:2px!important}
+  #pageHome .ws-val{font-size:22px!important;font-weight:600!important;color:#333!important}
   #pageHome .ws-income .ws-val{color:#1f2933!important}
   #pageHome .ws-expense .ws-val{color:#333!important}
   /* 手机端隐藏旧年月选择行和预算卡片 */
   #pageHome .month-filter-bar{position:fixed!important;top:-9999px!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
   #pageHome .budget-progress-card{display:none!important}
   /* 手机端快捷功能图标行 */
-  #pageHome .home-quick-actions{display:flex!important;justify-content:space-around!important;padding:8px 0!important;margin-bottom:0!important;background:#F5D547!important;border-radius:0!important;flex-shrink:0!important}
+  #pageHome .home-quick-actions{display:flex!important;justify-content:space-around!important;padding:10px 0 8px!important;margin-bottom:0!important;background:#F5D547!important;border-radius:0!important;flex-shrink:0!important;border-bottom:1px solid rgba(0,0,0,.06)!important}
   #pageHome .hqa-label{font-size:11px!important;color:#666!important;text-align:center!important}
-  #pageHome .hqa-item{display:flex!important;flex-direction:column!important;align-items:center!important;gap:4px!important;cursor:pointer!important}
-  #pageHome .hqa-icon{font-size:16px!important}
+  #pageHome .hqa-item{display:flex!important;flex-direction:column!important;align-items:center!important;gap:4px!important;cursor:pointer!important;padding:4px 8px!important;border-radius:8px!important;transition:background .2s}
+  #pageHome .hqa-item:active{background:rgba(255,255,255,.3)!important}
+  #pageHome .hqa-icon{font-size:20px!important}
   /* 快捷操作栏 - 隐藏 */
   #pageHome .quick-row{display:none!important}
   /* 快速记账栏移动端适配 */
-  #pageHome .quick-entry-bar{margin:0 0 10px!important;padding:10px 12px!important;border-radius:12px!important;border:none!important;background:#F7F7F7!important;box-shadow:none!important}
-  #pageHome .quick-entry-bar:focus-within{box-shadow:none!important;border-color:transparent!important}
-  #pageHome .quick-entry-input{font-size:20px!important;font-weight:400!important}
-  #pageHome .quick-entry-input::placeholder{font-size:14px!important;font-weight:400!important;color:#aaa!important}
-  #pageHome .qe-type-btn{font-size:12px!important;font-weight:400!important;padding:5px 10px!important;border-radius:16px!important}
-  #pageHome .qe-type-btn.active{background:var(--primary,#6C63FF)!important;color:#fff!important}
+  #pageHome .quick-entry-bar{margin:12px!important;padding:14px 16px!important;border-radius:16px!important;border:none!important;background:#fff!important;box-shadow:0 2px 12px rgba(0,0,0,.06)!important;display:flex!important;align-items:center!important;gap:10px!important;position:relative!important;z-index:5!important}
+  #pageHome .quick-entry-bar:focus-within{box-shadow:0 4px 16px rgba(245,213,71,.25)!important;border-color:transparent!important}
+  #pageHome .quick-entry-input{font-size:24px!important;font-weight:600!important;color:#333!important;flex:1!important;min-width:0!important;border:none!important;background:transparent!important;outline:none!important;font-family:inherit}
+  #pageHome .quick-entry-input::placeholder{font-size:16px!important;font-weight:400!important;color:#ccc!important}
+  #pageHome .quick-entry-type{display:flex!important;gap:4px!important;flex-shrink:0!important}
+  #pageHome .quick-entry-bar .qe-type-btn{font-size:13px!important;font-weight:600!important;padding:8px 14px!important;border-radius:20px!important;border:2px solid #eee!important;color:#999!important;background:transparent!important;cursor:pointer!important;font-family:inherit}
+  #pageHome .quick-entry-bar .qe-type-btn.active{background:#F5D547!important;color:#333!important;border-color:#F5D547!important}
+  #pageHome .quick-entry-bar .qe-type-btn:not(.active){border-color:#eee!important;color:#999!important}
   #pageHome .quick-entry-hint{display:none!important}
-  #pageHome .qe-go-btn{padding:7px 12px!important;font-size:15px!important;font-weight:400!important;border-radius:18px!important;min-width:36px!important}
+  #pageHome .quick-entry-bar #quickEntryGo{padding:10px 16px!important;font-size:16px!important;font-weight:700!important;border-radius:20px!important;min-width:44px!important;background:#F5D547!important;color:#333!important;border:none!important;box-shadow:none!important;transform:none!important;cursor:pointer!important;font-family:inherit}
+  #pageHome .quick-entry-bar #quickEntryGo:hover{background:#F5D547!important;color:#333!important}
+  #pageHome .quick-entry-bar #quickEntryGo:active{background:#E6C840!important}
+  /* 分类浮层中的保存按钮 */
+  .quick-cat-panel #quickCatSave{padding:10px 16px!important;font-size:16px!important;font-weight:700!important;border-radius:20px!important;min-width:60px!important;background:#F5D547!important;color:#333!important;border:none!important;box-shadow:none!important;transform:none!important;cursor:pointer!important;font-family:inherit}
+  /* 鲨鱼记账黄色主题 - 覆盖所有按钮样式 */
+  #pageHome #quickEntryGo{background:#F5D547!important;color:#333!important;border-radius:20px!important}
+  #pageHome .quick-entry-bar .qe-type-btn.active{background:#F5D547!important;color:#333!important;border-color:#F5D547!important}
+  .bottom-nav #botAddBtn{background:#F5D547!important;color:#333!important;border-radius:24px!important}
   /* 快速记账分类浮层移动端 - 居中显示 */
-  .quick-cat-panel{max-height:70vh!important;width:92vw!important;border-radius:16px!important;animation:qcpScaleIn .25s cubic-bezier(.22,1,.36,1)!important}
+  .quick-cat-panel{max-height:70vh!important;max-width:92%!important;width:auto!important;border-radius:16px!important;animation:qcpScaleIn .25s cubic-bezier(.22,1,.36,1)!important}
   .quick-cat-grid{grid-template-columns:repeat(4,1fr)!important;gap:8px!important;padding:10px 16px 6px!important}
   .qc-item{padding:10px 2px!important;border-radius:12px!important}
   .qc-item-icon{width:32px!important;height:32px!important;font-size:18px!important;border-radius:8px!important}
@@ -107,10 +178,10 @@
     .tx-swipe-del{background:#EF4444}
     .tx-swipe-del:active{background:#DC2626}
     /* 日账单列表卡片 */
-  #pageHome .list-card{margin-bottom:0;border-radius:0!important;padding:0 0 90px!important;flex:1 1 auto!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;border:none!important}
-  #pageHome .list-card .home-section-head{padding:10px 12px 8px!important;margin-bottom:0!important}
-  #pageHome .list-card .section-title{font-size:16px!important;font-weight:400!important;margin:0!important}
-  #pageHome .list-card .home-month-select{font-size:13px!important}
+  #pageHome .list-card{margin-bottom:0;border-radius:0!important;padding:0!important;flex:1 1 auto!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;border:none!important;background:#fff!important}
+  #pageHome .list-card .home-section-head{padding:12px 14px 10px!important;margin-bottom:0!important;border-bottom:1px solid #f5f5f5!important}
+  #pageHome .list-card .section-title{font-size:17px!important;font-weight:600!important;margin:0!important;color:#333!important}
+  #pageHome .list-card .home-month-select{font-size:14px!important}
   /* 1024px以下：隐藏多余首页模块 */
   #pageHome .quick-row{display:none!important}
   #pageHome .calendar-card,#pageHome .top-expense-card,#pageHome .networth-card,#pageHome .side-card{display:none!important}
@@ -181,14 +252,14 @@
   .invest-analysis-grid{grid-template-columns:1fr;gap:16px}
   .invest-mini-row{grid-template-columns:42px minmax(0,1fr) 72px;font-size:13px;min-height:64px}
 
-  #pageStats{display:flex!important;flex-direction:column!important;height:calc(100dvh - 52px)!important;overflow:hidden!important}
-  #pageStats .chart-card{min-height:auto!important;margin-bottom:8px;padding:16px 0;display:block!important;border-radius:12px}
-  #pageStats .asset-change-card{display:flex!important;flex-direction:column!important;flex:1!important;margin-bottom:0!important;border-radius:12px;overflow:hidden!important}
-  #pageStats .asset-ledger-hero{grid-template-columns:1fr!important}
-  #pageStats .asset-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px}
+  #pageStats{display:flex!important;flex-direction:column!important;height:100%!important;overflow:hidden!important;background:#fff!important}
+  #pageStats .chart-card{min-height:auto!important;margin-bottom:8px;padding:16px 0;display:block!important;border-radius:12px;background:#fff!important;border:none!important;box-shadow:none!important}
+  #pageStats .asset-change-card{display:flex!important;flex-direction:column!important;flex:1!important;margin-bottom:0!important;border-radius:0!important;overflow:hidden!important;background:#fff!important;border:none!important}
+  #pageStats .asset-ledger-hero{grid-template-columns:1fr!important;padding:0 12px!important;border-bottom:1px solid #f5f5f5!important}
+  #pageStats .asset-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;padding:12px!important}
   #pageStats .asset-ledger-layout{display:flex!important;flex-direction:column!important;grid-template-columns:1fr!important;flex:1!important;overflow:hidden!important}
   #pageStats .asset-ledger-left{order:2;max-height:none!important;overflow:hidden!important;padding:0!important;display:flex!important;flex-direction:column!important;flex:1!important}
-  #pageStats .asset-ledger-right{order:1;position:relative!important;left:50%!important;transform:translateX(-50%)!important;width:calc(100vw - 24px)!important;flex:none!important;margin:0 0 12px!important;padding:0!important}
+  #pageStats .asset-ledger-right{order:1;position:relative!important;left:0!important;transform:none!important;width:100%!important;flex:none!important;margin:0 0 12px!important;padding:0 12px!important;box-sizing:border-box!important}
   #pageStats .asset-snapshot-form{padding:0 16px!important}
   #pageStats #assetSnapshotTime{display:none!important}
   #pageStats .asset-form-row1{grid-template-columns:1fr!important;gap:8px!important}
@@ -201,21 +272,22 @@
   /* 手机端统计页面恢复列表/表格切换 */
   #pageStats .asset-view-toggle{display:flex!important;gap:6px;margin-bottom:4px;flex-wrap:wrap;padding:0 12px 4px;flex-shrink:0!important}
   #pageStats #assetChangeRecords{flex:1!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
-  #pageStats .asset-view-toggle .asset-action-btn{font-size:12px!important;padding:6px 10px!important;border-radius:8px!important}
+  #pageStats .asset-view-toggle .asset-action-btn{font-size:12px!important;padding:6px 10px!important;border-radius:8px!important;background:#f5f5f5!important;color:#333!important;border:none!important}
+  #pageStats .asset-view-toggle .asset-action-btn.active{background:#F5D547!important;color:#333!important}
   /* 手机端记录卡片平铺满屏 */
   #pageStats .chart-card{padding:12px 0!important}
-  #pageStats .asset-record-card{padding:10px 12px!important;border-radius:0!important;border-left:none!important;border-right:none!important;border-bottom:1px solid #f0f0f0!important;margin:0!important;box-shadow:none!important;background:#fff!important}
+  #pageStats .asset-record-card{padding:12px 14px!important;border-radius:0!important;border-left:none!important;border-right:none!important;border-bottom:1px solid #f5f5f5!important;margin:0!important;box-shadow:none!important;background:#fff!important}
   #pageStats .asset-record-list{gap:0!important}
-  #pageStats .asset-record-date{font-size:12px!important}
-  #pageStats .asset-record-date b{font-size:14px!important}
+  #pageStats .asset-record-date{font-size:13px!important;color:#999!important}
+  #pageStats .asset-record-date b{font-size:15px!important;color:#333!important}
   #pageStats .asset-record-date span{display:none!important}
-  #pageStats .asset-record-amount{font-size:18px!important}
+  #pageStats .asset-record-amount{font-size:19px!important;font-weight:600!important}
   #pageStats .asset-record-index{font-size:11px!important}
   /* 手机端统计表格适配 */
   #pageStats .asset-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   #pageStats .asset-change-table{width:100%;border-collapse:collapse;font-size:12px}
-  #pageStats .asset-change-table th{padding:8px 6px!important;font-size:12px!important;border-bottom:2px solid var(--border);font-weight:700;background:var(--bg)}
-  #pageStats .asset-change-table td{padding:8px 6px!important;font-size:12px!important;border-bottom:1px solid var(--border-light)}
+  #pageStats .asset-change-table th{padding:8px 6px!important;font-size:12px!important;border-bottom:2px solid #f0f0f0;font-weight:600;background:#fff;color:#999}
+  #pageStats .asset-change-table td{padding:8px 6px!important;font-size:12px!important;border-bottom:1px solid #f5f5f5;color:#333}
   #pageStats #assetChangeSummary{padding:0 12px}
   #pageStats .asset-change-table th:nth-child(1),
   #pageStats .asset-change-table td:nth-child(1),
@@ -224,10 +296,10 @@
   #pageStats .asset-change-table th:nth-child(6),
   #pageStats .asset-change-table td:nth-child(6){display:none!important}
   /* 手机端统计概览卡片优化 */
-  #pageStats .ss-item{padding:14px 12px!important;border-radius:10px!important}
-  #pageStats .ss-label{font-size:11px!important}
-  #pageStats .ss-value{font-size:18px!important}
-  #pageStats .stats-summary-title{font-size:16px!important;margin-bottom:12px!important}
+  #pageStats .ss-item{padding:14px 12px!important;border-radius:12px!important;background:#f8f8f8!important;border:none!important}
+  #pageStats .ss-label{font-size:12px!important;color:#999!important}
+  #pageStats .ss-value{font-size:20px!important;font-weight:600!important;color:#333!important}
+  #pageStats .stats-summary-title{font-size:17px!important;margin-bottom:12px!important;color:#333!important;font-weight:600!important}
   /* 手机端投资页概览优化 */
   #pageInvestment .ss-item{padding:14px 12px!important;border-radius:10px!important}
   #pageInvestment .ss-label{font-size:11px!important}
@@ -419,10 +491,11 @@
   #pageBills .search-history{display:none!important}
   #pageBills .bills-sidebar{display:none!important}
   #pageBills .bills-workspace{display:none!important}
-  #pageBills .bills-tabs{padding:0 0 8px!important;margin-bottom:0!important;background:#F5D547!important;border-radius:0!important;gap:0!important}
+  /* 账单页顶部Tab - 黄色背景,为灵动岛留出空间 */
+  #pageBills .bills-tabs{padding:0 0 10px!important;margin:0!important;background:#F5D547!important;border-radius:0!important;gap:0!important;height:auto!important;display:flex!important;align-items:flex-end!important;position:sticky!important;top:env(safe-area-inset-top)!important;z-index:12!important;padding-top:env(safe-area-inset-top)!important}
   #pageBills .bills-tab[data-billtab="day"]{display:none!important}
-  #pageBills .bills-tabs .bills-tab{flex:1;padding:10px 8px!important;font-size:14px!important;border-radius:0!important;border:none!important;background:transparent!important;color:#666!important;border-bottom:2px solid transparent!important}
-  #pageBills .bills-tabs .bills-tab.active{color:#333!important;font-weight:400!important;border-bottom-color:#333!important;background:transparent!important}
+  #pageBills .bills-tabs .bills-tab{flex:1;padding:12px 8px!important;font-size:15px!important;border-radius:0!important;border:none!important;background:transparent!important;color:#666!important;border-bottom:2px solid transparent!important;font-weight:400!important}
+  #pageBills .bills-tabs .bills-tab.active{color:#333!important;font-weight:600!important;border-bottom-color:#333!important;background:transparent!important}
   #pageBills .bills-panel.hide{display:none!important}
   #pageBills #billsPanelYear .month-bill-month-nav{display:none!important}
   #pageBills .year-bill-summary{display:block!important;background:#F5D547!important;border-radius:12px!important;padding:16px!important;margin:12px!important;grid-template-columns:none!important}
@@ -449,15 +522,24 @@
   #pageBills #billsPanelMonth .month-bill-summary-inner .mb-val{font-size:16px!important}
   #pageBills #monthBillCats .side-card{border-radius:12px!important;margin-bottom:10px!important}
 
-  .tx-item{gap:10px;padding:14px 12px;min-width:0;min-height:64px;align-items:center}
-  .date-header{padding:10px 12px 6px!important}
-  .tx-icon{width:38px;height:38px;border-radius:10px;font-size:18px}
-  .tx-main{min-width:0;overflow:hidden}
+  /* 各页面背景色统一为白色 - 避免键盘弹出时露紫色 */
+  #pageBills{background:#fff!important}
+  #pageStats{background:#fff!important}
+  #pageSettings{background:#fff!important}
+  #pageAccounts{background:#fff!important}
+  #pageInvestment{background:#fff!important}
+
+  .tx-item{gap:12px;padding:16px 14px;min-width:0;min-height:68px;align-items:center;border-bottom:1px solid #f5f5f5!important}
+  .date-header{padding:14px 14px 8px!important;font-size:14px!important;font-weight:600!important;color:#333!important}
+  .tx-icon{width:42px;height:42px;border-radius:12px;font-size:20px;display:flex!important;align-items:center!important;justify-content:center!important}
+  .tx-main{min-width:0;overflow:hidden;flex:1!important}
   .tx-cat-dot{display:none!important}
-  .tx-title{font-size:12px;gap:3px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
-  .tx-sub{font-size:11px;gap:3px;min-width:0;overflow:hidden;white-space:nowrap}
+  .tx-title{font-size:15px;gap:3px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;color:#333}
+  .tx-sub{font-size:12px;gap:3px;min-width:0;overflow:hidden;white-space:nowrap;color:#999}
   .tx-sub span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tx-amount{font-size:12px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;font-weight:400;margin-right:6px}
+  .tx-amount{font-size:16px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;font-weight:600;margin-right:4px}
+  .tx-amount.expense{color:#333}
+  .tx-amount.income{color:#52C41A}
   .tx-actions{display:none}
   .tag-pill,.large-badge,.status-badge{font-size:10px;padding:2px 6px;margin-left:3px}
 
@@ -465,12 +547,15 @@
   #pageInvestment .investment-add-btn,#pageInvestment .investment-batch-btn{min-width:0;white-space:normal;line-height:1.25}
   #pageStats .asset-summary-grid,.stats-summary-grid{grid-template-columns:1fr 1fr!important}
   #pageStats canvas{max-width:100%!important}
-  #pageAccounts .acc-card{min-width:0;padding:12px}
-  #pageAccounts .acc-info{min-width:0;overflow:hidden}
+  #pageAccounts .acc-card{min-width:0;padding:14px 16px!important;border-radius:0!important;border-left:none!important;border-right:none!important;border-bottom:1px solid #f5f5f5!important;margin:0!important;box-shadow:none!important;background:#fff!important}
+  #pageAccounts .acc-info{min-width:0;overflow:hidden;flex:1!important}
+  #pageAccounts .acc-name{font-size:15px!important;font-weight:500!important;color:#333!important}
+  #pageAccounts .acc-type{font-size:12px!important;color:#999!important}
   #pageAccounts .acc-name,#pageAccounts .acc-type{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #pageAccounts .acc-balance{font-size:14px;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #pageSettings .tx-item{align-items:flex-start}
-  #pageSettings .tx-amount{max-width:96px}
+  #pageAccounts .acc-balance{font-size:17px!important;font-weight:600!important;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#333!important}
+  #pageSettings .tx-item{align-items:center!important;padding:16px 14px!important;border-radius:0!important;border-left:none!important;border-right:none!important;border-bottom:1px solid #f5f5f5!important;margin:0!important;box-shadow:none!important;background:#fff!important}
+  #pageSettings .tx-amount{max-width:120px;font-size:15px!important;font-weight:500!important;color:#999!important}
+  #pageSettings .tx-title{font-size:15px!important;font-weight:500!important;color:#333!important}
   .modal-sheet{width:100%;max-width:100%;overflow-x:hidden}
   .sheet-body input,.sheet-body select,.sheet-body textarea{max-width:100%;min-width:0}
   .login-fullscreen{align-items:stretch!important}
@@ -494,7 +579,7 @@
   /* 搜索页样式 */
   #pageSearch{background:#F5D547!important;overflow:hidden!important;padding:0!important;height:100%!important}
   .search-page{display:flex;flex-direction:column;height:100%}
-  .search-topbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#F5D547;flex-shrink:0}
+  .search-topbar{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;background:#F5D547;flex-shrink:0}
   .search-filter-btn{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#333;white-space:nowrap;cursor:pointer;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.4)}
   .search-input-wrap{flex:1;min-width:0}
   .search-input-wrap input{width:100%;padding:8px 12px;border-radius:8px;border:none;font-size:14px;background:rgba(255,255,255,.8);outline:none;color:#333}
@@ -508,7 +593,7 @@
   /* 日历页样式 */
   #pageCalendar{background:#fff!important;overflow:hidden!important;padding:0!important;height:100%!important}
   .calendar-page{display:flex;flex-direction:column;height:100%}
-  .calendar-topbar{display:flex;align-items:center;justify-content:center;height:44px;padding:0 12px;background:#F5D547;flex-shrink:0;gap:16px}
+  .calendar-topbar{display:flex;align-items:center;justify-content:center;height:calc(44px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;background:#F5D547;flex-shrink:0;gap:16px}
   .cal-nav-btn{width:32px;height:32px;border:none;border-radius:8px;background:rgba(255,255,255,.45);color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
   .cal-month-title{font-size:16px;font-weight:700;color:#333;cursor:pointer;user-select:none}
   .cal-book-select{height:28px;padding:0 8px;border-radius:6px;border:none;background:rgba(255,255,255,.45);color:#333;font-size:12px;margin-left:auto}
@@ -536,10 +621,8 @@
   /* 2026-07-07 手机端初步整理：恢复常用功能，减少隐藏导致的混乱 */
   body{background:#fff!important}
   .main{background:#fff!important}
-  .page:not(.hide){padding-bottom:18px!important}
 
   /* 底部导航：隐藏投资和账户，投资从首页快捷入口进入 */
-  .bottom-nav{height:64px!important;padding:6px 4px calc(6px + env(safe-area-inset-bottom))!important;align-items:center!important}
   .bot-tab[data-page="investment"]{display:none!important}
   .bot-tab[data-page="accounts"]{display:none!important}
   .bot-tab{min-width:0!important}
@@ -707,7 +790,7 @@
 /* 排行页面 - 手机端 */
 #pageRanking{display:flex;flex-direction:column;overflow:hidden}
 .ranking-header{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#F5D547;flex-shrink:0}
-.sub-back-btn{position:fixed!important;top:4px!important;right:4px!important;z-index:100!important;background:rgba(255,255,255,.7)!important;border:none!important;font-size:12px!important;color:#6C63FF!important;cursor:pointer!important;padding:2px 8px!important;border-radius:10px!important;box-shadow:none!important}
+.sub-back-btn{display:none!important}
 .ranking-title{font-size:16px;font-weight:600;color:#1f2933;flex:1;text-align:center}
 .ranking-sort{display:flex;gap:0;background:rgba(0,0,0,.06);border-radius:20px;padding:2px;flex-shrink:0}
 .ranking-sort-btn{padding:4px 12px;border:none;border-radius:18px;font-size:12px;background:transparent;color:#666;cursor:pointer}
@@ -730,3 +813,30 @@
 .ranking-empty{padding:60px 20px;text-align:center;color:#9aa3ad;font-size:14px}
 #pageHome.hide,#pageBills.hide,#pageAccounts.hide,#pageStats.hide,#pageInvestment.hide,#pageSettings.hide,.page.hide{display:none!important}
 .hide{display:none!important}
+
+/* ===== 下拉刷新 ===== */
+.pull-refresh{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  background:#f5f5f5;
+  z-index:55;
+  overflow:hidden;
+  transition:height 0.2s ease;
+}
+.pull-refresh-icon{
+  font-size:20px;
+  color:#999;
+  transition:transform 0.2s ease;
+}
+.pull-refresh-text{
+  font-size:12px;
+  color:#999;
+}

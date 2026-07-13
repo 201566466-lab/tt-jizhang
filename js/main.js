@@ -14,21 +14,28 @@ const QUICK_NOTES={
   invest:['基金收益','股票收益','理财收益','定投收益','分红']
 };
 const CATEGORY_QUICK_NOTES={
-  '餐饮':['早餐','午餐','晚餐','外卖','饮料','咖啡'],
-  '交通出行':['公交','地铁','打车','加油','停车'],
+  '餐饮':['早餐','午餐','晚餐','外卖','饮料','咖啡','火锅','烧烤','零食','奶茶'],
+  '交通出行':['公交','地铁','打车','加油','停车','高铁','火车','滴滴'],
+  '购物':['网购','衣服','鞋包','数码','淘宝','京东','拼多多','日用品'],
+  '娱乐休闲':['电影','游戏','会员','KTV','门票','视频会员','直播','剧本杀'],
+  '生活':['菜钱','水电','燃气','物业','快递','打印','维修','洗衣'],
   '住房':['房租','水费','电费','燃气','物业'],
-  '购物':['网购','衣服','鞋包','数码','淘宝'],
-  '娱乐休闲':['电影','游戏','会员','KTV','门票'],
-  '生活':['菜钱','房租','短剧','电费','腾讯云'],
-  '旅行':['酒店','机票','火车','景点','打车'],
-  '人情':['红包','礼物','请客','份子钱','家庭'],
-  '学习':['书籍','课程','考试','文具','软件'],
-  '医疗':['挂号','药品','体检','牙科','眼镜'],
-  '通讯网络':['话费','流量','宽带','充值','云服务'],
-  '数码电子':['手机','电脑','配件','充电','耳机'],
-  '家庭亲友':['姐姐','爸爸','妈妈','家用','转给家人'],
-  '个人护理':['理发','护肤','美容','洗剪吹','剃须'],
-  '其他':['临时','杂项','待确认','补记','其他']
+  '人情':['红包','礼物','请客','份子钱','家庭','父母','生日','结婚'],
+  '学习':['书籍','课程','考试','文具','软件','网课','培训','考证'],
+  '医疗':['挂号','药品','体检','牙科','眼镜','医保','疫苗'],
+  '旅行':['酒店','机票','火车','景点','打车','旅游','度假'],
+  '数码电子':['手机','电脑','配件','充电','耳机','相机','平板'],
+  '通讯网络':['话费','流量','宽带','充值','云服务','会员'],
+  '个人护理':['理发','护肤','美容','洗剪吹','剃须','化妆品','面膜'],
+  '家庭亲友':['姐姐','爸爸','妈妈','家用','转给家人','生活费'],
+  '其他':['临时','杂项','待确认','补记','其他'],
+  '工资':['月薪','基本工资','绩效','年终奖'],
+  '奖金':['绩效奖金','年终奖','项目奖金','提成'],
+  '兼职':['兼职','副业','外包','咨询'],
+  '红包礼金':['红包','礼金','压岁钱','生日红包'],
+  '退款/优惠':['退款','优惠','返利','返现'],
+  '投资收益':['股票收益','基金收益','理财收益','利息'],
+  '其他收入':['其他','意外之财','报销']
 };
 const QUOTES=[
   {t:'真正的富有，是知道自己拥有什么。',a:'亨利·戴维·梭罗'},
@@ -95,16 +102,29 @@ const PERSONAS=[
 // 预设备注关键词自动分类映射
 const PRESET_AUTO_CAT_KEYWORDS={
   expense:[
-    {kw:['外卖','包子','火锅','午饭','面','水','烧烤','乡村基','吃饭','泡面','饭扫光','早餐','肯德基','蜜雪冰城','冒菜','一把骨','聚餐','请客吃饭','小吃','零食','奶茶','咖啡','饮料'],catName:'餐饮'},
-    {kw:['地铁','公交','滴滴','小拉出行','打车','停车费','动车','高铁','火车','出租车','网约车','代驾','加油'],catName:'交通'},
-    {kw:['猫粮','猫砂','充电器','鼠标','洗面奶','电池','衣服','裤子','鞋子','包包','化妆品','护肤品','洗发水','沐浴露','牙膏','牙刷','纸巾','洗衣液','洗洁精','垃圾袋','京东','淘宝','拼多多','天猫','手机','电脑','平板','耳机','键盘','显示器','电视','冰箱','洗衣机','空调','数据线','充电宝','路由器','网购'],catName:'购物'},
-    {kw:['电费','水费','气费','话费','电话费','搬家','维修','保洁','洗衣','理发','洗车','照片','打印','复印','快递','邮寄','会员','订阅','短剧','房租','书','教材','课程','培训','学费','考试','报名','考级','考证','驾照','驾校','网课','辅导班','补习班'],catName:'生活'},
-    {kw:['门票','电影','影院','KTV','唱吧','游戏','Steam','网吧','网咖','剧本杀','密室','游乐园','公园','景区','彩票','刮刮乐','打赏','直播','音乐会','演唱会','球赛','体彩大乐透','大乐透','按摩'],catName:'娱乐'},
+    {kw:['外卖','包子','火锅','午饭','面','水','烧烤','乡村基','吃饭','泡面','饭扫光','早餐','肯德基','蜜雪冰城','冒菜','一把骨','聚餐','请客吃饭','小吃','零食','奶茶','咖啡','饮料','晚餐','午餐','炸鸡','汉堡','披萨','寿司','麻辣烫','烤鱼','干锅','串串'],catName:'餐饮'},
+    {kw:['地铁','公交','滴滴','小拉出行','打车','停车费','动车','高铁','火车','出租车','网约车','代驾','加油','飞机','机票','火车票'],catName:'交通出行'},
+    {kw:['衣服','裤子','鞋子','包包','化妆品','护肤品','洗发水','沐浴露','牙膏','牙刷','纸巾','洗衣液','洗洁精','垃圾袋','京东','淘宝','拼多多','天猫','手机','电脑','平板','耳机','键盘','显示器','电视','冰箱','洗衣机','空调','数据线','充电宝','路由器','网购','购物'],catName:'购物'},
+    {kw:['电影','影院','KTV','唱吧','游戏','Steam','网吧','网咖','剧本杀','密室','游乐园','公园','景区','彩票','刮刮乐','打赏','直播','音乐会','演唱会','球赛','体彩大乐透','大乐透','按摩','视频会员','会员'],catName:'娱乐休闲'},
+    {kw:['电费','水费','气费','话费','电话费','搬家','维修','保洁','洗衣','洗车','照片','打印','复印','快递','邮寄','订阅','短剧'],catName:'生活'},
+    {kw:['房租','水费','电费','燃气','物业'],catName:'住房'},
     {kw:['红包','结婚','生日','份子钱','送礼','礼物','鲜花','蛋糕','请客','招待','孝顺','父母','长辈','亲戚'],catName:'人情'},
-    {kw:['机票','酒店','民宿','客栈','旅馆','宾馆','度假村','温泉','签证','护照','旅行','旅游','度假','出国'],catName:'旅行'},
+    {kw:['书','教材','课程','培训','学费','考试','报名','考级','考证','驾照','驾校','网课','辅导班','补习班','书籍','文具'],catName:'学习'},
     {kw:['医院','诊所','药店','药房','挂号','体检','疫苗','牙科','眼科','CT','B超','验血','输液','打针','药费','医疗费'],catName:'医疗'},
-
+    {kw:['机票','酒店','民宿','客栈','旅馆','宾馆','度假村','温泉','签证','护照','旅行','旅游','度假','出国','景点'],catName:'旅行'},
+    {kw:['手机','电脑','配件','充电','耳机','相机','平板','数码'],catName:'数码电子'},
+    {kw:['话费','流量','宽带','充值','云服务','会员'],catName:'通讯网络'},
+    {kw:['理发','护肤','美容','洗剪吹','剃须','化妆品','面膜'],catName:'个人护理'},
+    {kw:['姐姐','爸爸','妈妈','家用','转给家人','生活费'],catName:'家庭亲友'},
     {kw:['基金','股票','证券','债券','理财','定投','ETF','余额宝','零钱通','国债','黄金','保险'],catName:'投资'}
+  ],
+  income:[
+    {kw:['工资','月薪','基本工资','绩效','工资收入'],catName:'工资'},
+    {kw:['奖金','绩效奖金','年终奖','项目奖金','提成','奖励'],catName:'奖金'},
+    {kw:['兼职','副业','外包','咨询'],catName:'兼职'},
+    {kw:['红包','礼金','压岁钱','生日红包'],catName:'红包礼金'},
+    {kw:['退款','优惠','返利','返现'],catName:'退款/优惠'},
+    {kw:['股票收益','基金收益','理财收益','利息'],catName:'投资收益'}
   ]
 };
 
@@ -510,29 +530,34 @@ function resetShortcutKeys(){
 
 function seed(){
   const cats=[
-    // 支出 - 按消费频率从高到低排列
-    {id:1,n:'餐饮',t:'expense',i:'🍜',c:'#f43f5e'},
-    {id:2,n:'交通出行',t:'expense',i:'🚗',c:'#6366f1'},
-    {id:3,n:'住房',t:'expense',i:'🏠',c:'#f59e0b'},
-    {id:4,n:'购物',t:'expense',i:'🛍️',c:'#8b5cf6'},
-    {id:5,n:'娱乐休闲',t:'expense',i:'🎮',c:'#ec4899'},
-    {id:6,n:'医疗',t:'expense',i:'🏥',c:'#10b981'},
-    {id:7,n:'人情',t:'expense',i:'🎁',c:'#f97316'},
-    {id:8,n:'数码电子',t:'expense',i:'📱',c:'#06b6d4'},
-    {id:9,n:'生活',t:'expense',i:'🏡',c:'#14b8a6'},
-    {id:10,n:'学习',t:'expense',i:'📚',c:'#8b5cf6'},
-    {id:11,n:'旅行',t:'expense',i:'✈️',c:'#0ea5e9'},
-    {id:12,n:'通讯网络',t:'expense',i:'📶',c:'#64748b'},
+    // 支出 - 鲨鱼记账分类顺序
+    {id:1,n:'餐饮',t:'expense',i:'🍜',c:'#f43f5e',ord:1},
+    {id:2,n:'交通出行',t:'expense',i:'🚗',c:'#6366f1',ord:2},
+    {id:3,n:'购物',t:'expense',i:'🛍️',c:'#8b5cf6',ord:3},
+    {id:4,n:'娱乐休闲',t:'expense',i:'🎮',c:'#ec4899',ord:4},
+    {id:5,n:'生活',t:'expense',i:'🧻',c:'#14b8a6',ord:5},
+    {id:6,n:'住房',t:'expense',i:'🏠',c:'#f59e0b',ord:6},
+    {id:7,n:'人情',t:'expense',i:'🎁',c:'#f97316',ord:7},
+    {id:8,n:'学习',t:'expense',i:'📚',c:'#8b5cf6',ord:8},
+    {id:9,n:'医疗',t:'expense',i:'🏥',c:'#10b981',ord:9},
+    {id:10,n:'旅行',t:'expense',i:'✈️',c:'#0ea5e9',ord:10},
+    {id:11,n:'数码电子',t:'expense',i:'📱',c:'#06b6d4',ord:11},
+    {id:12,n:'通讯网络',t:'expense',i:'📶',c:'#64748b',ord:12},
+    {id:13,n:'个人护理',t:'expense',i:'💄',c:'#f472b6',ord:13},
+    {id:14,n:'家庭亲友',t:'expense',i:'👨‍👩‍👧',c:'#a78bfa',ord:14},
+    {id:15,n:'其他',t:'expense',i:'📦',c:'#94a3b8',ord:99},
     // 收入
-    {id:20,n:'工资',t:'income',i:'💰',c:'#10b981'},
-    {id:21,n:'兼职',t:'income',i:'💼',c:'#6366f1'},
-    {id:22,n:'红包礼金',t:'income',i:'🧧',c:'#f43f5e'},
-    {id:23,n:'退款/优惠',t:'income',i:'↩️',c:'#8b5cf6'},
-    {id:24,n:'奖金',t:'income',i:'🏆',c:'#f59e0b'},
+    {id:20,n:'工资',t:'income',i:'💰',c:'#10b981',ord:1},
+    {id:21,n:'奖金',t:'income',i:'🏆',c:'#f59e0b',ord:2},
+    {id:22,n:'兼职',t:'income',i:'💼',c:'#6366f1',ord:3},
+    {id:23,n:'红包礼金',t:'income',i:'🧧',c:'#f43f5e',ord:4},
+    {id:24,n:'退款/优惠',t:'income',i:'↩️',c:'#8b5cf6',ord:5},
+    {id:25,n:'投资收益',t:'income',i:'📈',c:'#06b6d4',ord:6},
+    {id:26,n:'其他收入',t:'income',i:'💵',c:'#94a3b8',ord:99},
     // 投资
-    {id:30,n:'股票',t:'invest',i:'📈',c:'#f43f5e'},
-    {id:31,n:'基金',t:'invest',i:'📊',c:'#6366f1'},
-    {id:32,n:'理财',t:'invest',i:'💎',c:'#f59e0b'}
+    {id:30,n:'股票',t:'invest',i:'📈',c:'#f43f5e',ord:1},
+    {id:31,n:'基金',t:'invest',i:'📊',c:'#6366f1',ord:2},
+    {id:32,n:'理财',t:'invest',i:'💎',c:'#f59e0b',ord:3}
   ];
   cats.forEach(c=>{if(c.t==='expense'&&c.budget==null)c.budget=0;});
   const accs=[
@@ -1694,6 +1719,59 @@ function applyResponsiveNav(){
 }
 applyResponsiveNav();
 window.addEventListener('resize',()=>{applyResponsiveNav();requestAnimationFrame(alignHomeExpenseRank);});
+
+/* ========== iOS 键盘适配（防止页面整体上移） ========== */
+(function(){
+  // 方法1：VisualViewport API（现代 iOS WKWebView 推荐）
+  if(window.visualViewport){
+    const onKeyboard=(vp)=>{
+      const keyboardHeight=window.innerHeight-vp.offsetTop-vp.height;
+      if(keyboardHeight>150){ // 键盘实际高度 > 150px
+        document.body.classList.add('keyboard-open');
+        document.body.style.setProperty('--kb-height',keyboardHeight+'px');
+      }else{
+        document.body.classList.remove('keyboard-open');
+      }
+    };
+    window.visualViewport.addEventListener('resize',(e)=>onKeyboard(e.target));
+    window.visualViewport.addEventListener('scroll',(e)=>onKeyboard(e.target));
+  }
+  // 方法2：Fallback（focusin/focusout 检测输入框聚焦）
+  const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+  if(isMobile){
+    const resetKb=()=>{
+      const kp=document.querySelector('.keyboard-pad');
+      if(kp)return; // 已有键盘不处理
+      setTimeout(()=>{
+        const h=window.innerHeight;
+        const vh=window.visualViewport?window.visualViewport.height:window.innerHeight;
+        if(vh<window.outerHeight*0.7)document.body.classList.add('keyboard-open');
+        else document.body.classList.remove('keyboard-open');
+      },100);
+    };
+    document.addEventListener('focusin',(e)=>{
+      const tag=(e.target?.tagName||'').toLowerCase();
+      if(['input','textarea','select'].includes(tag)||e.target?.isContentEditable){
+        document.body.classList.add('keyboard-open');
+      }
+    });
+    document.addEventListener('focusout',(e)=>{
+      setTimeout(()=>{
+        const stillFocused=document.querySelector('input:focus, textarea:focus, select:focus');
+        if(!stillFocused)document.body.classList.remove('keyboard-open');
+      },150);
+    });
+  }
+  // 方法3：resize 兜底
+  window.addEventListener('resize',()=>{
+    const vpH=window.visualViewport?window.visualViewport.height:window.innerHeight;
+    if(vpH<window.innerHeight*0.7){
+      document.body.classList.add('keyboard-open');
+    }else{
+      document.body.classList.remove('keyboard-open');
+    }
+  });
+})();
 
 /* ========== 首页 ========== */
 function renderHome(){
@@ -7163,9 +7241,10 @@ async function startApp(useBlank=false){
 }
 
 async function bootWithAuth(){
-  // 测试模式：跳过密码登录
-  const skipLogin=true;
-  if(skipLogin){await startApp();return;}
+  // 手机端（屏幕宽度小于700px）跳过密码登录
+  if(window.innerWidth <= 700){await startApp();return;}
+  
+  // 电脑端保持登录验证
   const pwd=getApiPassword();
   // 每天只需验证一次：有密码且今天已验证过，直接进入
   if(pwd&&!isApiPasswordExpired()){await startApp();return;}

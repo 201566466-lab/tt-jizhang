@@ -31,14 +31,14 @@
 
 /* ===== 基础 ===== */
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow-x:hidden}
-body.home-page{overflow:hidden}
+html,body{height:100%;overflow:hidden}
+html,body{width:100%;height:100%;margin:0;padding:0;overflow:hidden;box-sizing:border-box}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   background:var(--bg);color:var(--text);line-height:1.5;
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
 }
-.app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:100px}
+.app{max-width:480px;margin:0 auto;min-height:100dvh;position:relative;overflow:hidden}
 @media(min-width:769px){
   .app{max-width:720px}
 }
@@ -48,7 +48,7 @@ body{
   .bg-mesh{opacity:.4}
   .sub-back-btn{display:none!important}
   .app{
-    max-width:none;width:100%;height:100vh;display:grid;
+    max-width:none;width:100%;height:100dvh;display:grid;
     grid-template-columns:1fr;grid-template-rows:72px 1fr;
     grid-template-areas:"topbar" "main";
     padding:0;gap:0;min-height:0
@@ -86,7 +86,7 @@ body{
   /* 主内容区：居中 + 最大宽度 */
   .main{
     grid-area:main;overflow:hidden;
-    padding:28px 28px 40px;height:calc(100vh - 72px)
+    padding:28px 28px 40px;height:calc(100dvh - 72px)
   }
   .page{padding:0;width:100%;max-width:none;margin:0}
   /* 首页：三栏布局 */
@@ -95,7 +95,7 @@ body{
     grid-template-columns:minmax(280px,360px) minmax(520px,1fr) minmax(340px,420px);
     gap:24px;
     align-items:start;
-    height:calc(100vh - 72px - 68px);
+    height:calc(100dvh - 72px - 68px);
     overflow:hidden
   }
   /* 中列：垂直排版 */
@@ -242,7 +242,7 @@ body{
     display:flex;flex-direction:column;gap:0;
     max-width:none;margin:-28px 0 0 -28px;
     padding:0 28px 0 28px;
-    height:calc(100vh - 72px);
+    height:calc(100dvh - 72px);
     overflow:hidden
   }
   /* 单卡片撑满，内部充分利用空间 */
@@ -281,7 +281,7 @@ body{
     /* 账单页：双栏布局 */
   #pageBills{
     display:grid;grid-template-columns:minmax(560px,1fr) minmax(320px,400px);gap:24px;align-content:start;
-    max-width:none;margin:0;height:calc(100vh - 72px - 68px);overflow:hidden;
+    max-width:none;margin:0;height:calc(100dvh - 72px - 68px);overflow:hidden;
     grid-template-rows:auto minmax(0,1fr)
   }
   #pageBills .bills-tabs{grid-column:1;grid-row:1;margin-bottom:0}
@@ -314,7 +314,7 @@ body{
   /* 投资页：双栏 */
   #pageInvestment{
     display:grid;grid-template-columns:1fr;gap:16px;align-content:start;
-    max-width:none;margin:0;height:calc(100vh - 72px - 68px);overflow:hidden;
+    max-width:none;margin:0;height:calc(100dvh - 72px - 68px);overflow:hidden;
     grid-template-rows:auto auto minmax(0,1fr)
   }
   #pageInvestment .investment-page-head{grid-column:1/-1}
@@ -329,7 +329,7 @@ body{
   /* 账户页：双栏 */
   #pageAccounts{
     display:grid;grid-template-columns:minmax(560px,1fr) minmax(340px,420px);gap:24px;align-content:start;
-    max-width:none;margin:0;height:calc(100vh - 72px - 68px);overflow:hidden;
+    max-width:none;margin:0;height:calc(100dvh - 72px - 68px);overflow:hidden;
     grid-template-rows:auto minmax(0,1fr)
   }
   #pageAccounts .section-title{grid-column:1/-1}
@@ -348,7 +348,7 @@ body{
   /* 设置页：双栏 */
   #pageSettings{
     display:grid;grid-template-columns:240px minmax(560px,1fr);gap:24px;align-content:start;
-    max-width:none;margin:0;height:calc(100vh - 72px - 68px);overflow:hidden
+    max-width:none;margin:0;height:calc(100dvh - 72px - 68px);overflow:hidden
   }
   .settings-main{grid-column:2;min-height:0;overflow-y:auto;overscroll-behavior:contain}
   .settings-sidebar{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:18px;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;position:sticky;top:0}
@@ -478,7 +478,7 @@ body.home-page .finance-particles{opacity:.42}
 .sync-status.error{color:var(--expense);border-color:rgba(244,63,94,.25);background:var(--expense-soft);cursor:pointer}
 .sync-status.error .sync-dot{background:var(--expense)}
 @keyframes syncPulse{0%,100%{opacity:.45;transform:scale(.9)}50%{opacity:1;transform:scale(1.2)}}
-.bottom-nav{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:4px;padding:6px 8px;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border:1px solid var(--border);border-radius:100px;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.bottom-nav{position:fixed;bottom:env(safe-area-inset-bottom);left:50%;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:4px;padding:6px 8px;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border:1px solid var(--border);border-radius:100px;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
 .dark .bottom-nav{background:rgba(30,41,59,.92)}
 .bot-tab{position:relative;padding:8px 16px;border:none;background:transparent;color:var(--text-tertiary);font-size:13px;font-weight:600;border-radius:100px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:var(--transition);white-space:nowrap}
 .bot-tab .tab-icon{font-size:20px;line-height:1}

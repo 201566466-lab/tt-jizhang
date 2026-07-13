@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#6366f1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#F5D547">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TT记账">
@@ -733,6 +733,10 @@
           <div class="setting-group-title">ℹ️ 关于</div>
           <div id="versionInfoPanel"></div>
         </div>
+        <div class="list-card" style="margin-top:12px">
+          <div class="setting-group-title">🔐 账号安全</div>
+          <div class="tx-item" id="setLogout" onclick="logoutApp()"><div class="tx-main"><div class="tx-title" style="color:#EF4444">🚪 退出登录</div><div class="tx-sub">清除登录状态，返回登录页面</div></div><div class="tx-amount">›</div></div>
+        </div>
       </div>
       <!-- 右侧边栏 -->
       <div class="settings-sidebar">
@@ -1193,6 +1197,215 @@
 
 <!-- PWA Service Worker 注册 -->
 <script>
+  // ===== APP WebView底部导航栏位置修复 =====
+  (function(){
+    if(window.innerWidth > 700) return;
+    
+    function getSafeAreaBottom(){
+      var safeAreaBottom = 0;
+      
+      try{
+        if(window.CSS && window.CSS.supports && window.CSS.supports('padding-bottom', 'env(safe-area-inset-bottom)')){
+          var tempDiv = document.createElement('div');
+          tempDiv.style.cssText = 'position:fixed;bottom:0;left:0;width:1px;height:1px;padding-bottom:env(safe-area-inset-bottom);visibility:hidden;pointer-events:none;z-index:99999';
+          document.body.appendChild(tempDiv);
+          safeAreaBottom = parseInt(getComputedStyle(tempDiv).paddingBottom) || 0;
+          document.body.removeChild(tempDiv);
+        }
+      }catch(e){}
+      
+      if(safeAreaBottom <= 0){
+        try{
+          var ua = navigator.userAgent || '';
+          var isIOS = /iPhone|iPad|iPod/.test(ua);
+          if(isIOS){
+            var h = window.screen.height;
+            var w = window.screen.width;
+            if(h >= 812 || h >= 844 || h >= 852 || h >= 896 || h >= 926 || h >= 932){
+              safeAreaBottom = 34;
+            }
+          }
+        }catch(e){}
+      }
+      
+      return safeAreaBottom;
+    }
+    
+    function forceFix(){
+      var nav = document.querySelector('.bottom-nav');
+      if(!nav) return false;
+      
+      var safeBottom = getSafeAreaBottom();
+      var navHeight = 52 + safeBottom;
+      
+      nav.style.cssText = [
+        'position: fixed',
+        'bottom: 0',
+        'left: 0',
+        'right: 0',
+        'width: 100%',
+        'height: auto',
+        'min-height: ' + navHeight + 'px',
+        'padding: 4px 0 ' + (4 + safeBottom) + 'px 0',
+        'margin: 0',
+        'transform: none',
+        'max-width: none',
+        'border-radius: 0',
+        'box-sizing: border-box',
+        'z-index: 999',
+        'display: flex',
+        'background: #fff',
+        'border-top: 1px solid #f0f0f0',
+        'border-left: none',
+        'border-right: none',
+        'border-bottom: none',
+        'box-shadow: 0 -2px 12px rgba(0,0,0,.06)'
+      ].join(' !important; ') + ' !important;';
+      
+      var mainEl = document.querySelector('.main');
+      if(mainEl){
+        mainEl.style.paddingBottom = navHeight + 'px';
+      }
+      
+      var appEl = document.querySelector('.app');
+      if(appEl){
+        appEl.style.height = window.innerHeight + 'px';
+        appEl.style.minHeight = window.innerHeight + 'px';
+      }
+      
+      return true;
+    }
+    
+    function tryFix(times, delay){
+      times = times || 5;
+      delay = delay || 100;
+      var count = 0;
+      var timer = setInterval(function(){
+        count++;
+        if(forceFix() || count >= times){
+          clearInterval(timer);
+        }
+      }, delay);
+    }
+    
+    window.addEventListener('load', function(){ tryFix(10, 100); });
+    window.addEventListener('resize', function(){ forceFix(); });
+    if(window.visualViewport){
+      window.visualViewport.addEventListener('resize', function(){ forceFix(); });
+    }
+    
+    tryFix(8, 80);
+    setTimeout(function(){ tryFix(5, 200); }, 300);
+    setTimeout(function(){ tryFix(3, 300); }, 1000);
+  })();
+
+  // ===== 手机端下拉刷新 =====
+  (function(){
+    if(window.innerWidth > 700) return;
+    
+    var pullRefresh = document.createElement('div');
+    pullRefresh.className = 'pull-refresh';
+    pullRefresh.innerHTML = '<div class="pull-refresh-icon">↓</div><div class="pull-refresh-text">下拉刷新</div>';
+    document.body.appendChild(pullRefresh);
+    
+    var startY = 0;
+    var currentY = 0;
+    var isPulling = false;
+    var canRefresh = false;
+    var isRefreshing = false;
+    var threshold = 60;
+    var maxPull = 80;
+    var pageContainer = null;
+    
+    function getScrollContainer(){
+      var activePage = document.querySelector('.page:not(.hide)');
+      if(activePage) return activePage;
+      return document.querySelector('.pages-wrap');
+    }
+    
+    function isAtTop(){
+      var container = getScrollContainer();
+      if(!container) return true;
+      return container.scrollTop <= 0;
+    }
+    
+    function setPullDistance(distance){
+      if(distance < 0) distance = 0;
+      if(distance > maxPull) distance = maxPull;
+      
+      var icon = pullRefresh.querySelector('.pull-refresh-icon');
+      var text = pullRefresh.querySelector('.pull-refresh-text');
+      
+      pullRefresh.style.height = distance + 'px';
+      
+      if(distance >= threshold){
+        canRefresh = true;
+        icon.style.transform = 'rotate(180deg)';
+        text.textContent = '释放刷新';
+      } else {
+        canRefresh = false;
+        icon.style.transform = 'rotate(0deg)';
+        text.textContent = '下拉刷新';
+      }
+    }
+    
+    function startRefresh(){
+      if(isRefreshing) return;
+      isRefreshing = true;
+      
+      var icon = pullRefresh.querySelector('.pull-refresh-icon');
+      var text = pullRefresh.querySelector('.pull-refresh-text');
+      
+      pullRefresh.style.height = threshold + 'px';
+      icon.style.transform = 'rotate(0deg)';
+      icon.style.animation = 'spin 1s linear infinite';
+      text.textContent = '刷新中...';
+      
+      setTimeout(function(){
+        location.reload();
+      }, 800);
+    }
+    
+    document.addEventListener('touchstart', function(e){
+      if(isRefreshing) return;
+      if(!isAtTop()) return;
+      
+      startY = e.touches[0].clientY;
+      currentY = startY;
+      isPulling = true;
+      canRefresh = false;
+    }, {passive: true});
+    
+    document.addEventListener('touchmove', function(e){
+      if(!isPulling || isRefreshing) return;
+      
+      currentY = e.touches[0].clientY;
+      var diff = currentY - startY;
+      
+      if(diff > 0 && isAtTop()){
+        e.preventDefault();
+        setPullDistance(diff * 0.5);
+      }
+    }, {passive: false});
+    
+    document.addEventListener('touchend', function(e){
+      if(!isPulling || isRefreshing) return;
+      
+      isPulling = false;
+      
+      if(canRefresh){
+        startRefresh();
+      } else {
+        pullRefresh.style.height = '0';
+      }
+    }, {passive: true});
+    
+    // 添加spin动画
+    var style = document.createElement('style');
+    style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+  })();
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch((err) => {
