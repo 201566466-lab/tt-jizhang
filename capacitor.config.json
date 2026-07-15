@@ -1,28 +1,29 @@
 {
-  "appId": "com.tt.jizhang",
-  "appName": "TT记账",
-  "webDir": "www",
-  "server": {
-    "url": "http://47.108.68.212/"
-  },
-  "ios": {
-    "contentInset": "never",
-    "allowLinkPreview": false,
-    "preferredContentMode": "mobile",
-    "backgroundColor": "#FFFFFF",
-    "keyboard": {
-      "resize": "none",
-      "appearance": "light",
-      "scroll": false,
-      "overlaysWebView": true
-    },
-    "splash": {
-      "launchAutoHide": true,
-      "showDuration": 0,
-      "fadeDuration": 0
-    }
-  },
-  "packageClassList": [
-    "HapticsPlugin"
-  ]
+    "appId":  "com.tt.jizhang",
+    "appName":  "TT记账",
+    "webDir":  "www",
+    "server":  {
+                   "url":  "http://47.108.68.212/"
+               },
+    "ios":  {
+                "contentInset":  "never",
+                "allowLinkPreview":  false,
+                "preferredContentMode":  "mobile",
+                "backgroundColor":  "#6A5ACD",
+                "keyboard":  {
+                                 "resize":  "none",
+                                 "appearance":  "light",
+                                 "scroll":  false,
+                                 "overlaysWebView":  true
+                             },
+                "splash":  {
+                               "launchAutoHide":  true,
+                               "showDuration":  3000,
+                               "fadeDuration":  500
+                           }
+            },
+    "packageClassList":  [
+                             "HapticsPlugin",
+                             "SplashScreenPlugin"
+                         ]
 }
