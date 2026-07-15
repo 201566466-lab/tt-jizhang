@@ -1214,46 +1214,63 @@ function initQuickEntry(){
 }
 function parseNoteModeInput(text){
   const t=String(text||'').trim();
-  if(!t)return {note:'',amount:null};
+  if(!t)return {note:'',originalAmount:null,discountAmount:null,totalAmount:null};
+  // 兼容"优惠"关键词拆分（与记一笔页面保持一致）
+  const discountIdx=t.indexOf('优惠');
+  if(discountIdx!==-1){
+    const beforeText=t.slice(0,discountIdx).trim();
+    const afterText=t.slice(discountIdx+2).trim();
+    const beforeNums=beforeText.match(/\d+(?:\.\d+)?/g);
+    const afterNums=afterText.match(/\d+(?:\.\d+)?/g);
+    const original=beforeNums?parseFloat(beforeNums[beforeNums.length-1]):null;
+    const discount=afterNums?parseFloat(afterNums[0]):null;
+    // 清理基础备注：去掉末尾数字
+    let baseNote=beforeText.replace(/\d+(?:\.\d+)?\s*$/,'').trim();
+    return {note:baseNote,originalAmount:original,discountAmount:discount,totalAmount:null};
+  }
   // 从末尾提取数字（支持小数）
   const match=t.match(/^(.*?)(\d+(?:\.\d+)?)\s*$/);
   if(match){
     const before=match[1].trim();
     const num=parseFloat(match[2]);
-    if(before){
-      return {note:before,amount:num};
-    }else{
-      // 只有数字
-      return {note:'',amount:num};
-    }
+    return {note:before,originalAmount:num,discountAmount:null,totalAmount:num};
   }
   // 没有数字
-  return {note:t,amount:null};
+  return {note:t,originalAmount:null,discountAmount:null,totalAmount:null};
 }
 function handleNoteModeSubmit(text){
   const parsed=parseNoteModeInput(text);
-  if(!parsed.amount||parsed.amount<=0){
+  // 有优惠但没有原价时无法记账
+  const hasDiscount=parsed.discountAmount!==null&&parsed.discountAmount>0;
+  const originalOrTotal=parsed.originalAmount||parsed.totalAmount;
+  if((!originalOrTotal||originalOrTotal<=0)&&(!hasDiscount)){
     toast('请输入金额');
     return;
   }
+  // 有优惠但无原价时，用优惠金额作为原价兜底
+  if(hasDiscount&&(!originalOrTotal||originalOrTotal<=0)){
+    parsed.originalAmount=parsed.discountAmount;
+    parsed.discountAmount=null;
+  }
   const d=load();
   const noteText=parsed.note;
-  // 匹配分类
+  // 匹配分类（使用清理后的备注，不含"优惠"关键字）
   const cat=matchPresetAutoCat(d,noteText,quickEntryType)||matchAutoRule(d,noteText,quickEntryType);
   if(cat){
-    saveQuickEntry(parsed.amount,String(cat.id),noteText);
-    toast(`识别为「${cat.n}」· ${fmt(parsed.amount)}`,'success');
+    saveQuickEntryWithDiscount(parsed.originalAmount,parsed.discountAmount,String(cat.id),noteText);
+    toast(`识别为「${cat.n}」· ${fmt(parsed.originalAmount||parsed.discountAmount)}`,'success');
   }else{
     // 没匹配到，打开分类选择面板
-    openQuickCatPanel(parsed.amount,noteText);
+    openQuickCatPanel(parsed.originalAmount||parsed.discountAmount,noteText,parsed.discountAmount);
   }
 }
-function openQuickCatPanel(amount,prefillNote){
+function openQuickCatPanel(amount,prefillNote,discountAmount){
   const overlay=$('quickCatOverlay');
   const grid=$('quickCatGrid');
   const title=$('quickCatTitle');
   const descInp=$('quickCatDesc');
   if(!overlay||!grid)return;
+  overlay.dataset.qcDiscount=discountAmount||'';
   title.textContent='选择分类 · '+fmt(amount)+(prefillNote?' · '+esc(prefillNote):'');
   descInp.value=prefillNote||'';
   // 渲染分类网格（排除隐藏分类，按排序字段排序）
@@ -1301,7 +1318,7 @@ function openQuickCatPanel(amount,prefillNote){
           $('quickCatNoteLabel').textContent=esc(cat.mobileName||cat.n)+' 快捷备注';
           notesEl.innerHTML=notes.map(n=>`<button class="qc-note-btn" data-note="${esc(n)}">${esc(n)}</button>`).join('');
           notesEl.querySelectorAll('.qc-note-btn').forEach(btn=>{
-            btn.onclick=()=>{saveQuickEntry(amount,selectedCatId,btn.dataset.note);};
+            btn.onclick=()=>{saveQuickEntryWithDiscount(amount,parseFloat(overlay.dataset.qcDiscount)||0,selectedCatId,btn.dataset.note);};
           });
           noteRow.style.display='block';
         }else{
@@ -1317,20 +1334,18 @@ function openQuickCatPanel(amount,prefillNote){
   // 保存按钮
   $('quickCatSave').onclick=()=>{
     if(!selectedCatId){toast('请先选择分类');return;}
-    saveQuickEntry(amount,selectedCatId,descInp.value.trim());
+    const disc=parseFloat(overlay.dataset.qcDiscount)||0;
+    saveQuickEntryWithDiscount(amount,disc,selectedCatId,descInp.value.trim());
   };
   overlay.classList.add('show');
 }
-function saveQuickEntry(amount,catId,desc){
-  $('quickCatOverlay').classList.remove('show');
+function saveQuickEntryWithDiscount(amount,discountAmount,catId,desc){
   const d=load();
   const cat=d.cats.find(c=>String(c.id)===String(catId));
   // 学习记忆：备注非空时，添加快捷备注和自动匹配规则
   if(desc&&cat){
     const catName=cat.mobileName||cat.n;
-    // 添加快捷备注
     addQuickNote(catName,desc);
-    // 添加自动匹配规则（去重）
     d.rules=d.rules||[];
     const kw=desc;
     const exists=d.rules.some(r=>r.type===quickEntryType&&r.kw===kw&&String(r.cat)===String(catId));
@@ -1344,12 +1359,26 @@ function saveQuickEntry(amount,catId,desc){
   const accId=defaultAcc?defaultAcc.id:null;
   const now=new Date();
   const dateVal=localDateStr();
+  // 创建支出/收入记录
   const tx={id:genId(),type:quickEntryType,amount,acc:accId,date:dateVal,time:now.toTimeString().slice(0,5),desc:desc||'',mood:'',cat:catId,st:'normal',balApplied:false,source:'quick'};
   d.txs.unshift(tx);
   applyTxBalance(d,tx);
-  logAction(d,'快速记账',`${TYPE_MAP[quickEntryType]} ${fmt(amount)} · ${cat?cat.n:'未分类'}`);
+  // 优惠自动记为收入（复用记一笔页面逻辑）
+  let discountTx=null;
+  if(quickEntryType==='expense'&&discountAmount>0&&discountAmount<amount){
+    let discCat=d.cats.find(c=>c.n==='优惠减免'&&c.t==='income');
+    if(!discCat){
+      discCat={id:genId(),n:'优惠减免',t:'income',i:'🎫',c:'#10b981'};
+      d.cats.push(discCat);
+    }
+    discountTx={id:genId(),type:'income',amount:discountAmount,acc:accId,date:dateVal,time:now.toTimeString().slice(0,5),desc:(desc?desc+' ':'')+'【优惠'+discountAmount.toFixed(2)+'元】',mood:'',cat:discCat.id,st:'normal',balApplied:false,source:'discount',discountFor:tx.id};
+    d.txs.unshift(discountTx);
+    applyTxBalance(d,discountTx);
+  }
+  logAction(d,'快速记账',`${TYPE_MAP[quickEntryType]} ${fmt(amount)} · ${cat?cat.n:'未分类'}`+(discountTx?' + 优惠收入 '+fmt(discountTx.amount):''));
   save(d);data=d;
-  // 清空输入框
+  // 关闭弹窗并清空输入
+  $('quickCatOverlay').classList.remove('show');
   $('quickEntryAmount').value='';
   $('quickEntryHint').textContent='';
   // 动画
@@ -1359,7 +1388,11 @@ function saveQuickEntry(amount,catId,desc){
   playSuccessSound();
   refreshAllViews();
   highlightTx(tx.id);
-  toast((quickEntryType==='expense'?'支出':'收入')+' '+fmt(amount)+' 已记录','success');
+  toast((quickEntryType==='expense'?'支出':'收入')+' '+fmt(amount)+' 已记录'+(discountTx?' + 优惠减免 '+fmt(discountTx.amount):''),'success');
+}
+function saveQuickEntry(amount,catId,desc){
+  // 统一复用带优惠处理的保存函数
+  saveQuickEntryWithDiscount(amount,0,catId,desc);
 }
 /* ========== 快捷备注管理 ========== */
 function openQuickNotesManager(){

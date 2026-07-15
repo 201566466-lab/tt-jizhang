@@ -1,0 +1,6 @@
+*.plist text eol=lf
+*.pbxproj text eol=lf
+*.xcscheme text eol=lf
+*.xcworkspacedata text eol=lf
+*.storyboard text eol=lf
+*.swift text eol=lf
