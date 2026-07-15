@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: macos-14
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,20 +16,42 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      - name: Install Capacitor
-        run: npm i @capacitor/cli @capacitor/ios
+      - name: Install npm packages
+        run: npm install
 
-      - name: Sync Web
+      - name: Sync Web to iOS
         run: npx cap sync ios
 
-      - name: Build iOS
-        uses: maxim(maxim)/xcode-cloud-build@latest
+      - name: Build iOS with xcodebuild
+        run: |
+          cd ios
+          xcodebuild -project App/App.xcodeproj -scheme App -configuration Release \
+            -destination generic/platform=iOS \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            -derivedDataPath build \
+            build 2>&1 | tail -30
+
+      - name: Package IPA
+        run: |
+          APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "App.app" -type d 2>/dev/null | grep -v "Pods" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            APP_PATH=$(find ios/build -name "App.app" -type d 2>/dev/null | head -1)
+          fi
+          echo "APP_PATH=$APP_PATH"
+          ls -la "$APP_PATH" 2>/dev/null || echo "App.app not found"
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/App.app 2>/dev/null || true
+          chmod +x Payload/App.app/App 2>/dev/null || true
+          cd Payload && zip -r ../tt-jizhang.ipa . && cd ..
+          ls -la tt-jizhang.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
         with:
-          app-id: com.tt.jizhang
-          build-description: "TT记账 iOS 构建"
-          export-options: ExportOptions
-          skip-xcode-version-check: true
-          runner: public.jenkins.fastlane
-          app-store-connect-api-key: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          name: tt-jizhang-ipa
+          path: tt-jizhang.ipa

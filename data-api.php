@@ -59,6 +59,13 @@ function backupFile($sourceFile, $backupDir, $prefix, $keep = 20) {
     if (!file_exists($sourceFile)) {
         return;
     }
+    // 4小时内只备份一次
+    $lastBackupFile = $backupDir . '/.' . $prefix . '_last_backup';
+    $lastBackupTime = file_exists($lastBackupFile) ? filemtime($lastBackupFile) : 0;
+    if (time() - $lastBackupTime < 4 * 3600) {
+        return;
+    }
+    touch($lastBackupFile);
     if (!is_dir($backupDir)) {
         @mkdir($backupDir, 0755, true);
     }

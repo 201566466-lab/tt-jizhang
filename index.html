@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="skin-shark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="css/pc.css">
 <link rel="stylesheet" href="css/mobile.css">
 </head>
-<body>
+<body style="background:#fff;margin:0;padding:0">
 
 <!-- 动态背景 -->
 <div class="bg-mesh">
@@ -190,6 +190,7 @@
 
       <!-- 快速记账 -->
       <div class="quick-entry-bar" id="quickEntryBar">
+        <button class="qe-mode-toggle" id="quickEntryModeToggle" title="切换金额/备注模式">¥</button>
         <input type="text" enterkeyhint="go" class="quick-entry-input" id="quickEntryAmount" placeholder="输入金额，回车快速记账">
         <button class="qe-go-btn" id="quickEntryGo">记</button>
         <div class="quick-entry-type" id="quickEntryType">
@@ -372,8 +373,8 @@
         <div class="advanced-filter hide" id="advancedFilterPanel">
           <input type="date" id="advStart" title="开始日期">
           <input type="date" id="advEnd" title="结束日期">
-          <input type="number" id="advMin" placeholder="最小金额">
-          <input type="number" id="advMax" placeholder="最大金额">
+          <input type="text" inputmode="text" id="advMin" placeholder="最小金额">
+          <input type="text" inputmode="text" id="advMax" placeholder="最大金额">
           <select id="advAcc"><option value="">全部账户</option></select>
           <select id="advTag"><option value="">全部标签</option></select>
           <select id="advStatus"><option value="">全部状态</option><option value="pending">待整理</option><option value="normal">正常</option></select>
@@ -535,7 +536,7 @@
               <div class="asset-form-row1">
                 <input type="date" id="assetSnapshotDate">
                 <input type="time" id="assetSnapshotTime">
-                <input type="number" id="assetSnapshotAmount" step="0.01" placeholder="总资产金额">
+                <input type="text" inputmode="text" id="assetSnapshotAmount" step="0.01" placeholder="总资产金额">
               </div>
               <div class="asset-form-row2">
                 <input type="text" id="assetSnapshotNote" maxlength="60" placeholder="备注（可选）">
@@ -668,7 +669,7 @@
           </div>
           <div id="amountRuleList"></div>
           <div class="rule-row">
-            <input id="amountRuleVal" type="number" step="0.01" placeholder="如 4" style="flex:0.8">
+            <input id="amountRuleVal" type="text" inputmode="text" step="0.01" placeholder="如 4" style="flex:0.8">
             <input id="amountRuleNote" placeholder="如 地铁" style="flex:1">
             <select id="amountRuleCat" style="flex:1"></select>
             <button id="amountRuleAddBtn" style="background:var(--primary-soft);color:var(--primary);flex:0.5">添加</button>
@@ -681,7 +682,7 @@
               <div class="tx-title" style="font-size:13px">大额支出阈值</div>
               <div class="tx-sub">超过这个金额的支出会显示“大额”标记，并可在账单页筛选</div>
             </div>
-            <input type="number" id="largeExpenseInput" min="0" step="1" placeholder="500">
+            <input type="text" inputmode="text" id="largeExpenseInput" min="0" step="1" placeholder="500">
             <button id="largeExpenseSaveBtn" class="tool-btn">保存</button>
           </div>
           <div class="rule-row alias-row" style="font-size:12px;color:var(--text-tertiary);font-weight:800">
@@ -885,11 +886,9 @@
     <div class="sheet-head">
       <div class="sheet-title" id="txTitle">记一笔</div>
       <div style="display:flex;gap:6px;align-items:center">
-        <button class="icon-btn-sm voice-btn" id="txVoiceBtn" title="语音记账：说\"午餐28元\"自动填入">🎤</button>
         <button class="icon-btn-sm" id="txSettingsBtn" title="记账设置">⚙️</button>
         <button class="icon-btn-sm" id="txClose">✕</button>
       </div>
-      <div class="voice-hint" id="txVoiceHint">正在听...</div>
     </div>
     <div class="sheet-body" style="position:relative">
       <!-- 记账设置面板 -->
@@ -911,7 +910,7 @@
           <div style="font-size:12px;color:var(--text-tertiary);margin-bottom:8px">输入指定金额时自动填充备注和分类</div>
           <div id="txAmountRuleList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px"></div>
           <div style="display:flex;gap:6px">
-            <input type="number" id="txAmountRuleVal" step="0.01" placeholder="金额" style="flex:1;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)">
+            <input type="text" inputmode="text" id="txAmountRuleVal" step="0.01" placeholder="金额" style="flex:1;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)">
             <input type="text" id="txAmountRuleNote" placeholder="备注" style="flex:1.2;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)">
             <select id="txAmountRuleCat" style="flex:1.5;height:36px;border:1.5px solid var(--border);border-radius:8px;padding:6px 8px;font-size:13px;background:var(--surface);color:var(--text)"></select>
             <button id="txAmountRuleAddBtn" style="flex:0.6;height:36px;background:var(--primary-soft);color:var(--primary);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">添加</button>
@@ -929,14 +928,14 @@
         <div class="pill" data-type="invest">投资收益</div>
       </div>
       <div class="field" id="txAmountField" style="display:none">
-        <input type="text" inputmode="decimal" class="amount-input" id="txAmount" placeholder="0.00 或 12+8.5">
+        <input type="text" inputmode="text" class="amount-input" id="txAmount" placeholder="0.00 或 12+8.5">
         <div class="calc-hint" id="txAmountHint"></div>
       </div>
       <div class="field" id="txMainGrid" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="txGridInner">
           <div class="tx-grid-item" id="txGridOriginal" data-field="original">
             <label>原价</label>
-            <input type="number" inputmode="decimal" id="txOriginalPrice" step="0.01" placeholder="原价金额" style="width:100%" oninput="calcDiscount()">
+            <input type="text" inputmode="text" id="txOriginalPrice" step="0.01" placeholder="原价金额" style="width:100%" oninput="calcDiscount()">
             <div class="calc-hint" id="txOriginalHint"></div>
           </div>
           <div class="tx-grid-item" data-field="desc">
@@ -945,7 +944,7 @@
           </div>
           <div class="tx-grid-item" id="txGridActual" data-field="actual">
             <label>优惠</label>
-            <input type="number" inputmode="decimal" id="txActualPay" step="0.01" placeholder="优惠金额" style="width:100%" oninput="calcDiscount()">
+            <input type="text" inputmode="text" id="txActualPay" step="0.01" placeholder="优惠金额" style="width:100%" oninput="calcDiscount()">
             <div class="calc-hint" id="txActualHint"></div>
           </div>
           <div class="tx-grid-item" data-field="date">
@@ -957,7 +956,7 @@
       </div>
       <div class="field hide" id="rateField">
         <label>收益率（可选）</label>
-        <input type="number" id="txRate" step="0.01" placeholder="例如 2.5 表示 +2.5%">
+        <input type="text" inputmode="text" id="txRate" step="0.01" placeholder="例如 2.5 表示 +2.5%">
       </div>
       <div class="field" id="catField">
         <label>分类</label>
@@ -1026,7 +1025,7 @@
       </div>
       <div class="field">
         <label>总资产金额</label>
-        <input type="number" class="amount-input" id="assetEditAmount" step="0.01" placeholder="0.00">
+        <input type="text" inputmode="text" class="amount-input" id="assetEditAmount" step="0.01" placeholder="0.00">
       </div>
       <div class="field">
         <label>备注</label>
@@ -1305,47 +1304,58 @@
     
     var pullRefresh = document.createElement('div');
     pullRefresh.className = 'pull-refresh';
-    pullRefresh.innerHTML = '<div class="pull-refresh-icon">↓</div><div class="pull-refresh-text">下拉刷新</div>';
+    pullRefresh.innerHTML = '<div class="pull-refresh-spinner"></div><div class="pull-refresh-text">下拉刷新</div>';
     document.body.appendChild(pullRefresh);
     
     var startY = 0;
     var currentY = 0;
+    var startScrollTop = 0;
     var isPulling = false;
     var canRefresh = false;
     var isRefreshing = false;
-    var threshold = 60;
-    var maxPull = 80;
-    var pageContainer = null;
+    var startedAtTop = false;
+    var thresholdSoundPlayed = false;
+    var threshold = 56;
+    var maxPull = 90;
     
     function getScrollContainer(){
+      var selectors = '#pageHome, #pageBills #billsPanelMonth, #pageBills #billsPanelYear, #pageBills #billsList, #pageSettings .settings-main, #pageStats, #pageInvestment, #pageAccounts .accounts-main';
+      for(var i = 0; i < selectors.split(',').length; i++){
+        var el = document.querySelector(selectors.split(',')[i].trim() + ':not(.hide)');
+        if(el) return el;
+      }
       var activePage = document.querySelector('.page:not(.hide)');
       if(activePage) return activePage;
       return document.querySelector('.pages-wrap');
-    }
-    
-    function isAtTop(){
-      var container = getScrollContainer();
-      if(!container) return true;
-      return container.scrollTop <= 0;
     }
     
     function setPullDistance(distance){
       if(distance < 0) distance = 0;
       if(distance > maxPull) distance = maxPull;
       
-      var icon = pullRefresh.querySelector('.pull-refresh-icon');
       var text = pullRefresh.querySelector('.pull-refresh-text');
+      var spinner = pullRefresh.querySelector('.pull-refresh-spinner');
       
       pullRefresh.style.height = distance + 'px';
+      pullRefresh.classList.toggle('visible', distance > 5);
+      
+      var progress = Math.min(distance / threshold, 1);
+      spinner.style.transform = 'rotate(' + (progress * 180) + 'deg)';
       
       if(distance >= threshold){
         canRefresh = true;
-        icon.style.transform = 'rotate(180deg)';
         text.textContent = '释放刷新';
+        text.style.color = 'var(--m-accent-text, #333)';
+        // 首次达到阈值时播放轻量音效反馈
+        if(!thresholdSoundPlayed && typeof playInteractionSound === 'function'){
+          playInteractionSound('select', true);
+          thresholdSoundPlayed = true;
+        }
       } else {
         canRefresh = false;
-        icon.style.transform = 'rotate(0deg)';
         text.textContent = '下拉刷新';
+        text.style.color = '#999';
+        thresholdSoundPlayed = false;
       }
     }
     
@@ -1353,57 +1363,80 @@
       if(isRefreshing) return;
       isRefreshing = true;
       
-      var icon = pullRefresh.querySelector('.pull-refresh-icon');
       var text = pullRefresh.querySelector('.pull-refresh-text');
+      var spinner = pullRefresh.querySelector('.pull-refresh-spinner');
       
-      pullRefresh.style.height = threshold + 'px';
-      icon.style.transform = 'rotate(0deg)';
-      icon.style.animation = 'spin 1s linear infinite';
+      pullRefresh.style.height = '60px';
+      spinner.className = 'pull-refresh-spinner spinning';
       text.textContent = '刷新中...';
+      text.style.color = '#999';
+      // 强制播放刷新音效（不受音效模式限制）
+      if(typeof playSound === 'function') playSound('save', true);
       
       setTimeout(function(){
+        pullRefresh.style.height = '0';
+        spinner.className = 'pull-refresh-spinner';
+        text.textContent = '下拉刷新';
         location.reload();
-      }, 800);
+      }, 600);
     }
     
     document.addEventListener('touchstart', function(e){
       if(isRefreshing) return;
-      if(!isAtTop()) return;
-      
+      // 只在输入框外响应
+      if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+      var container = getScrollContainer();
+      if(!container) return;
+      startScrollTop = container.scrollTop;
+      // 不在顶部时直接忽略，不触发下拉
+      if(startScrollTop > 2) return;
       startY = e.touches[0].clientY;
       currentY = startY;
       isPulling = true;
+      startedAtTop = true;
+      thresholdSoundPlayed = false;
       canRefresh = false;
-    }, {passive: true});
+    }, {passive: false});
     
     document.addEventListener('touchmove', function(e){
       if(!isPulling || isRefreshing) return;
-      
       currentY = e.touches[0].clientY;
       var diff = currentY - startY;
-      
-      if(diff > 0 && isAtTop()){
+      var container = getScrollContainer();
+      // 核心：如果scrollTop发生了变化，说明内容正在正常滚动，取消下拉
+      if(container && container.scrollTop !== startScrollTop){
+        isPulling = false;
+        startedAtTop = false;
+        pullRefresh.style.height = '0';
+        pullRefresh.classList.remove('visible');
+        return;
+      }
+      // 手指向下移动，显示下拉反馈
+      if(diff > 0 && startedAtTop){
         e.preventDefault();
-        setPullDistance(diff * 0.5);
+        setPullDistance(diff * 0.45);
+      } else if(diff < -30 && container && container.scrollTop > 5){
+        // 手指明显上滑且容器不在顶部，取消
+        isPulling = false;
+        startedAtTop = false;
+        pullRefresh.style.height = '0';
+        pullRefresh.classList.remove('visible');
+        return;
       }
     }, {passive: false});
     
     document.addEventListener('touchend', function(e){
       if(!isPulling || isRefreshing) return;
-      
       isPulling = false;
-      
+      startedAtTop = false;
+      startScrollTop = 0;
       if(canRefresh){
         startRefresh();
       } else {
         pullRefresh.style.height = '0';
+        pullRefresh.classList.remove('visible');
       }
     }, {passive: true});
-    
-    // 添加spin动画
-    var style = document.createElement('style');
-    style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
-    document.head.appendChild(style);
   })();
 
   if ('serviceWorker' in navigator) {

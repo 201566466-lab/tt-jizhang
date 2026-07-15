@@ -1,12 +1,28 @@
 {
-  "appId": "com.tt.jizhang",
+  "appId": "com.example.ttjizhang",
   "appName": "TT记账",
   "webDir": "www",
-  "server": {
-    "url": "http://47.108.68.212/"
+  "android": {
+    "backgroundColor": "#FFFFFF"
   },
   "ios": {
     "contentInset": "automatic",
-    "backgroundColor": "#6366f1"
+    "backgroundColor": "#FFFFFF",
+    "allowsLinkPreview": false,
+    "Keyboard": {
+      "resize": "body",
+      "style": "dark",
+      "resizeOnFullScreen": true
+    }
+  },
+  "server": {
+    "url": "http://47.108.68.212/"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": true,
+      "showDuration": 0,
+      "fadeDuration": 0
+    }
   }
 }
