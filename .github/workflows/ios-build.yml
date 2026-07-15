@@ -34,7 +34,7 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             DEVELOPMENT_TEAM="" \
             -derivedDataPath build \
-            build 2>&1 | tail -30
+            build 2>&1
 
       - name: Package IPA
         run: |
@@ -43,10 +43,11 @@ jobs:
             APP_PATH=$(find ios/build -name "App.app" -type d 2>/dev/null | head -1)
           fi
           echo "APP_PATH=$APP_PATH"
-          ls -la "$APP_PATH" 2>/dev/null || echo "App.app not found"
+          ls -la "$APP_PATH" || { echo "App.app not found at $APP_PATH"; exit 1; }
+          ls "$APP_PATH/App" || { echo "App binary missing!"; exit 1; }
           mkdir -p Payload
-          cp -R "$APP_PATH" Payload/App.app 2>/dev/null || true
-          chmod +x Payload/App.app/App 2>/dev/null || true
+          cp -R "$APP_PATH" Payload/
+          chmod +x Payload/App.app/App || true
           cd Payload && zip -r ../tt-jizhang.ipa . && cd ..
           ls -la tt-jizhang.ipa
 

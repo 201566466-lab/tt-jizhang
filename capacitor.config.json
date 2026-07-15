@@ -1,28 +1,28 @@
 {
-  "appId": "com.example.ttjizhang",
+  "appId": "com.tt.jizhang",
   "appName": "TT记账",
   "webDir": "www",
-  "android": {
-    "backgroundColor": "#FFFFFF"
-  },
-  "ios": {
-    "contentInset": "automatic",
-    "backgroundColor": "#FFFFFF",
-    "allowsLinkPreview": false,
-    "Keyboard": {
-      "resize": "body",
-      "style": "dark",
-      "resizeOnFullScreen": true
-    }
-  },
   "server": {
     "url": "http://47.108.68.212/"
   },
-  "plugins": {
-    "SplashScreen": {
+  "ios": {
+    "contentInset": "never",
+    "allowLinkPreview": false,
+    "preferredContentMode": "mobile",
+    "backgroundColor": "#FFFFFF",
+    "keyboard": {
+      "resize": "none",
+      "appearance": "light",
+      "scroll": false,
+      "overlaysWebView": true
+    },
+    "splash": {
       "launchAutoHide": true,
       "showDuration": 0,
       "fadeDuration": 0
     }
-  }
+  },
+  "packageClassList": [
+    "HapticsPlugin"
+  ]
 }

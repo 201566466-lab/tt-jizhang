@@ -7175,7 +7175,9 @@ async function startApp(useBlank=false,forceServer=false){
 }
 
 async function bootWithAuth(){
-  // 所有端都进行登录验证
+  // 手机端（宽度<=700px）跳过密码登录
+  if(window.innerWidth<=700){await startApp();return;}
+  // PC端和手机浏览器端进行登录验证
   const pwd=getApiPassword();
   // 每天只需验证一次：有密码且今天已验证过，直接进入
   if(pwd&&!isApiPasswordExpired()){await startApp();return;}
