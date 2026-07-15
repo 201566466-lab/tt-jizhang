@@ -48,8 +48,12 @@ jobs:
           mkdir -p Payload
           cp -R "$APP_PATH" Payload/
           chmod +x Payload/App.app/App || true
-          cd Payload && zip -r ../tt-jizhang.ipa . && cd ..
+          # Zip Payload/ folder (NOT cd into it) so the IPA has Payload/App.app/Info.plist
+          # iOS install tools require the Payload/ top-level wrapper
+          zip -r tt-jizhang.ipa Payload/
           ls -la tt-jizhang.ipa
+          echo "=== IPA structure (top level) ==="
+          unzip -l tt-jizhang.ipa | head -10
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
