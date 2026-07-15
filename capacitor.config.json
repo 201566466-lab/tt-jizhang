@@ -15,15 +15,9 @@
                                  "appearance":  "light",
                                  "scroll":  false,
                                  "overlaysWebView":  true
-                             },
-                "splash":  {
-                               "launchAutoHide":  true,
-                               "showDuration":  3000,
-                               "fadeDuration":  500
-                           }
+                             }
             },
     "packageClassList":  [
-                             "HapticsPlugin",
-                             "SplashScreenPlugin"
+                             "HapticsPlugin"
                          ]
 }
