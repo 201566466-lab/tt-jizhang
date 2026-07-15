@@ -1129,7 +1129,8 @@ function initQuickEntry(){
       inp.value='';
       if(hint)hint.textContent='';
       updateModeUI();
-      inp.focus();
+      inp.blur();
+      setTimeout(()=>{inp.focus();},50);
     };
   }
   updateModeUI();
@@ -1327,7 +1328,6 @@ function openQuickCatPanel(amount,prefillNote,discountAmount){
       }
       // 显示备注输入行和保存按钮
       descRow.style.display='flex';
-      descInp.value='';
       // 显示备注输入行和保存按钮（不自动focus，避免手机端弹出键盘）
     };
   });
@@ -1469,7 +1469,6 @@ $('quickNotesEditAdd').onclick=()=>{
 $('quickNotesEditInput').addEventListener('keydown',e=>{
   if(e.key==='Enter'){e.preventDefault();$('quickNotesEditAdd').click();}
 });
-initQuickEntry();
 
 /* ========== 主题 ========== */
 function applyTheme(){document.documentElement.classList.toggle('dark',isDark);const icon=$('btnTheme')?.querySelector('.tool-icon');if(icon)icon.textContent=isDark?'☀️':'🌙'}
@@ -6770,6 +6769,86 @@ function addAmountRule(){
   renderAmountRuleManager();renderRuleManager();toast('金额规则已添加');
 }
 
+/* ===== 手机端自动分类规则管理 ===== */
+function openMobileRulesModal(){
+  if(!$('mobileRulesModal'))return;
+  // 初始化类型对应的分类列表
+  const d=load();
+  const cats=d.cats.filter(c=>c.ac!==0&&c.t===$('mRuleType').value);
+  $('mRuleCat').innerHTML=cats.map(c=>`<option value="${c.id}">${esc(c.i+' '+c.n)}</option>`).join('');
+  $('mRuleKeyword').value='';
+  renderMobileRuleManager();
+  $('mobileRulesModal').classList.add('show');
+}
+function closeMobileRulesModal(){
+  if($('mobileRulesModal'))$('mobileRulesModal').classList.remove('show');
+}
+function renderMobileRuleManager(){
+  if(!$('mRuleList'))return;
+  const d=load();
+  const rules=d.rules||[];
+  $('mRuleCount').textContent=rules.length;
+  if(!rules.length){
+    $('mRuleList').innerHTML='<div style="padding:24px 12px;text-align:center;color:var(--text-tertiary);font-size:13px">还没有规则，点击上方添加</div>';
+    return;
+  }
+  // 按类型分组显示
+  const expenseRules=rules.filter(r=>r.type==='expense');
+  const incomeRules=rules.filter(r=>r.type==='income');
+  let html='';
+  if(expenseRules.length){
+    html+=`<div class="m-rule-group-title">支出规则 (${expenseRules.length})</div>`;
+    html+=expenseRules.map(r=>{
+      const c=d.cats.find(x=>String(x.id)===String(r.cat));
+      return `<div class="m-rule-item">
+        <div class="m-rule-kw">${esc(r.kw)}</div>
+        <div class="m-rule-cat">${esc(c?c.i+' '+c.n:'未分类')}</div>
+        <button class="m-rule-del" data-mdel="${r.id}">删除</button>
+      </div>`;
+    }).join('');
+  }
+  if(incomeRules.length){
+    html+=`<div class="m-rule-group-title" style="margin-top:12px">收入规则 (${incomeRules.length})</div>`;
+    html+=incomeRules.map(r=>{
+      const c=d.cats.find(x=>String(x.id)===String(r.cat));
+      return `<div class="m-rule-item">
+        <div class="m-rule-kw">${esc(r.kw)}</div>
+        <div class="m-rule-cat">${esc(c?c.i+' '+c.n:'未分类')}</div>
+        <button class="m-rule-del" data-mdel="${r.id}">删除</button>
+      </div>`;
+    }).join('');
+  }
+  $('mRuleList').innerHTML=html;
+  $('mRuleList').querySelectorAll('[data-mdel]').forEach(b=>b.onclick=()=>{
+    const d=load();
+    d.rules=(d.rules||[]).filter(r=>String(r.id)!==String(b.dataset.mdel));
+    save(d);data=d;
+    renderMobileRuleManager();
+    // 同步PC端规则列表
+    if($('ruleList'))renderRuleManager();
+    toast('规则已删除');
+  });
+}
+function addMobileRule(){
+  const kw=$('mRuleKeyword').value.trim();
+  if(!kw){toast('请输入关键词');return}
+  const type=$('mRuleType').value;
+  const cat=$('mRuleCat').value;
+  if(!cat){toast('请选择分类');return}
+  const d=load();
+  d.rules=d.rules||[];
+  // 去重检查
+  const exists=d.rules.some(r=>r.kw===kw&&r.type===type);
+  if(exists){toast('该关键词规则已存在');return}
+  d.rules.push({id:genId(),kw,type,cat:parseInt(cat)});
+  save(d);data=d;
+  $('mRuleKeyword').value='';
+  renderMobileRuleManager();
+  // 同步PC端规则列表
+  if($('ruleList'))renderRuleManager();
+  toast('规则已添加');
+}
+
 function renderBillEnhanceSettings(){
   if(!$('largeExpenseInput'))return;
   const d=load();
@@ -7034,6 +7113,17 @@ $('budgetClose').onclick=closeBudgetModal;
 $('budgetSave').onclick=saveBudgetFromModal;
 $('budgetInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveBudgetFromModal();});
 $('budgetModal').onclick=e=>{if(e.target===$('budgetModal'))closeBudgetModal();};
+/* 手机端自动分类规则管理 */
+if($('setMobileRules'))$('setMobileRules').onclick=openMobileRulesModal;
+if($('mobileRulesClose'))$('mobileRulesClose').onclick=closeMobileRulesModal;
+if($('mobileRulesModal'))$('mobileRulesModal').onclick=e=>{if(e.target===$('mobileRulesModal'))closeMobileRulesModal();};
+if($('mRuleAddBtn'))$('mRuleAddBtn').onclick=addMobileRule;
+if($('mRuleType'))$('mRuleType').onchange=()=>{
+  const d=load();
+  const cats=d.cats.filter(c=>c.ac!==0&&c.t===$('mRuleType').value);
+  $('mRuleCat').innerHTML=cats.map(c=>`<option value="${c.id}">${esc(c.i+' '+c.n)}</option>`).join('');
+};
+if($('mRuleKeyword'))$('mRuleKeyword').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addMobileRule();}});
 $('ruleAddBtn').onclick=addAutoRule;
 $('amountRuleAddBtn').onclick=addAmountRule;
 $('ruleType').onchange=renderRuleManager;

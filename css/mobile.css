@@ -144,15 +144,15 @@
   /* 快速记账栏移动端适配 */
   #pageHome .quick-entry-bar{margin:12px!important;padding:14px 16px!important;border-radius:16px!important;border:none!important;background:#fff!important;box-shadow:0 2px 12px rgba(0,0,0,.06)!important;display:flex!important;align-items:center!important;gap:10px!important;position:relative!important;z-index:5!important}
   #pageHome .quick-entry-bar:focus-within{box-shadow:0 4px 16px rgba(99,102,241,.15)!important;border-color:transparent!important}
-  #pageHome .quick-entry-input{font-size:24px!important;font-weight:600!important;color:#333!important;flex:1!important;min-width:0!important;border:none!important;background:transparent!important;outline:none!important;font-family:inherit}
-  #pageHome .quick-entry-input::placeholder{font-size:16px!important;font-weight:400!important;color:#ccc!important}
+  #pageHome .quick-entry-input{font-size:16px!important;font-weight:500!important;color:#333!important;flex:1!important;min-width:0!important;border:none!important;background:transparent!important;outline:none!important;font-family:inherit}
+  #pageHome .quick-entry-input::placeholder{font-size:13px!important;font-weight:400!important;color:#ccc!important}
   #pageHome .quick-entry-type{display:flex!important;gap:4px!important;flex-shrink:0!important}
   #pageHome .quick-entry-bar .qe-type-btn{font-size:13px!important;font-weight:600!important;padding:8px 14px!important;border-radius:20px!important;border:2px solid #eee!important;color:#999!important;background:transparent!important;cursor:pointer!important;font-family:inherit}
   #pageHome .quick-entry-bar .qe-type-btn.active{background:var(--m-accent)!important;color:var(--m-accent-text)!important;border-color:var(--m-accent)!important}
   #pageHome .quick-entry-bar .qe-type-btn:not(.active){border-color:#eee!important;color:#999!important}
   #pageHome .quick-entry-hint{display:none!important}
   #pageHome .quick-entry-bar .qe-mode-toggle{width:36px!important;height:36px!important;border-radius:10px!important;font-size:16px!important;border:none!important;background:#f0f0f0!important;color:#666!important}
-  #pageHome .quick-entry-bar .qe-mode-toggle.note-mode{background:var(--m-accent)!important;color:var(--m-accent-text)!important;border-color:var(--m-accent)!important}
+  #pageHome .quick-entry-bar .qe-mode-toggle.note-mode{background:#f0f0f0!important;color:#666!important;border-color:transparent!important}
   #pageHome .quick-entry-bar #quickEntryGo{padding:10px 16px!important;font-size:16px!important;font-weight:700!important;border-radius:20px!important;min-width:44px!important;background:var(--m-accent)!important;color:var(--m-accent-text)!important;border:none!important;box-shadow:none!important;transform:none!important;cursor:pointer!important;font-family:inherit}
   #pageHome .quick-entry-bar #quickEntryGo:hover{background:var(--m-accent)!important;color:var(--m-accent-text)!important}
   #pageHome .quick-entry-bar #quickEntryGo:active{background:var(--m-accent-hover)!important}
@@ -813,6 +813,18 @@
 .ranking-empty{padding:60px 20px;text-align:center;color:#9aa3ad;font-size:14px}
 #pageHome.hide,#pageBills.hide,#pageAccounts.hide,#pageStats.hide,#pageInvestment.hide,#pageSettings.hide,.page.hide{display:none!important}
 .hide{display:none!important}
+
+/* ===== 手机端自动分类规则管理弹窗 ===== */
+#mobileRulesModal .modal-sheet{max-height:90vh;display:flex;flex-direction:column}
+#mobileRulesModal .sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1}
+.mobile-rule-list{margin-top:4px;border-radius:10px;overflow:hidden;background:#f8f9fa}
+.m-rule-group-title{font-size:12px;color:#999;font-weight:600;padding:10px 12px 6px;background:#f8f9fa}
+.m-rule-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border-bottom:1px solid #f0f1f3}
+.m-rule-item:last-child{border-bottom:none}
+.m-rule-kw{flex:0 0 auto;min-width:60px;max-width:120px;font-size:14px;font-weight:500;color:#1f2933;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#FFF8DC;padding:3px 10px;border-radius:12px}
+.m-rule-cat{flex:1;min-width:0;font-size:13px;color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-rule-del{flex-shrink:0;padding:5px 12px;font-size:12px;border:1px solid #ffcdd2;background:#fff5f5;color:#ff4d4f;border-radius:14px;cursor:pointer}
+.m-rule-del:active{background:#ffe0e0;transform:scale(.95)}
 
 /* ===== 下拉刷新 ===== */
 .pull-refresh{
